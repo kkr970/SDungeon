@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Knight : CharacterManager
 {
-    public int speed = 4;
-    public float turn = 0f;
+    private int speed = 5;
+    private float turn = 0f;
+    //STATE state = STATE.WAIT;
 
+    //Turn 관련
     public override void setTurn()
     {
         base.setTurn();
@@ -15,10 +17,5 @@ public class Knight : CharacterManager
     public override float getTurn()
     {
         return turn;
-    }
-
-    public override string getName()
-    {
-        return base.getName();
     }
 }

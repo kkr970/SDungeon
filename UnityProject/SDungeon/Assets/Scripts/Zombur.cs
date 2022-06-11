@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Zombur : CharacterManager
 {
-    public int speed = 3;
-    public float turn = 0f;
+    private int speed = 3;
+    private float turn = 0f;
+    //STATE state = STATE.WAIT;
 
+    //Turn 관련
     public override void setTurn()
     {
         base.setTurn();
@@ -15,10 +17,5 @@ public class Zombur : CharacterManager
     public override float getTurn()
     {
         return turn;
-    }
-
-    public override string getName()
-    {
-        return base.getName();
     }
 }
