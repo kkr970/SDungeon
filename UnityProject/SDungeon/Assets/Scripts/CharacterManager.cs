@@ -10,7 +10,7 @@ public enum STATE
 
 public class CharacterManager : MonoBehaviour, ICharacter
 {
-    public STATE state = STATE.WAIT;
+    public STATE state = STATE.END;
     public float turnSpeed { get; private set; }
 
 

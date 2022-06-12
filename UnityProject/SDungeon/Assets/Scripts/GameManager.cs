@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
     public int enemyNum;
     public int turnNum;
 
-    private bool isProcessing;
+    public bool isProcessing;
 
     void Awake()
     {
@@ -76,11 +76,17 @@ public class GameManager : MonoBehaviour
                     break;
             }
         }
+        mSetTurn();
     }
 
     void Update()
     {
-        //임시 코드 확인용 버튼
+        // 마지막 캐릭터가 행동을 종료시 자동 setturn
+        if(lcharactors[lcharactors.Count - 1].State == STATE.END)
+        {
+            mSetTurn();
+        }
+        // 임시 코드 확인용 버튼
         if(Input.GetKeyDown(KeyCode.A))
         {
             mSetTurn();
@@ -93,6 +99,7 @@ public class GameManager : MonoBehaviour
         {
             if(!isProcessing)
             {
+                isProcessing = true;
                 mProgressTurn();
             }
         }
@@ -132,26 +139,33 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Input : ProgressTurn!");
         CharacterManager progressChara = null;
-        int i = 0;
-        for( ; i < lcharactors.Count ; i++)
+
+        for(int i = 0 ; i < lcharactors.Count ; i++)
         {
             if(lcharactors[i].State == STATE.WAIT)
             {
                 progressChara = lcharactors[i];
                 Debug.Log("Progress Chara : " + progressChara.getName());
                 // 캐릭터의 행동
-                // 투명도를 조절
-                Color newColor = lcharactors[i].GetComponent<SpriteRenderer>().color;
-                newColor.a = 0.3921f;
-                lcharactors[i].GetComponent<SpriteRenderer>().color = newColor;
-                progressChara.State = STATE.END;
+                StartCoroutine(waitTurn(lcharactors[i]));
                 break;
             }
         }
-        if(i >= lcharactors.Count - 1)
-        {
-            mSetTurn();
-            return;
-        }
+    }
+
+    private IEnumerator waitTurn(CharacterManager chara)
+    {
+        Debug.Log(chara.getName() + " : Wait turn!");
+
+        yield return new WaitForSeconds(1.0f);
+        // 투명도를 조절
+        Color newColor = chara.GetComponent<SpriteRenderer>().color;
+        newColor.a = 0.3921f;
+        chara.GetComponent<SpriteRenderer>().color = newColor;
+        // 턴 마침
+        chara.State = STATE.END;
+
+        Debug.Log(chara.getName() + " : End turn!");
+        isProcessing = false;
     }
 }
