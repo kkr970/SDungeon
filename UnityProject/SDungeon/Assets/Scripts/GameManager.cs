@@ -17,8 +17,10 @@ public class GameManager : MonoBehaviour
         }
     }
     
-    public CharacterManager[] charactors;
+    private CharacterManager[] charactors;
     public List<CharacterManager> lcharactors;
+    public List<CharacterManager> lplayerCharactors;
+    public List<CharacterManager> lenemyCharactors;
 
     public GameObject knightPrefab;
     public GameObject archmagePrefab;
@@ -81,11 +83,6 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        // 마지막 캐릭터가 행동을 종료시 자동 setturn
-        if(lcharactors[lcharactors.Count - 1].State == STATE.END)
-        {
-            mSetTurn();
-        }
         // 임시 코드 확인용 버튼
         if(Input.GetKeyDown(KeyCode.A))
         {
@@ -115,6 +112,8 @@ public class GameManager : MonoBehaviour
         
         charactors = FindObjectsOfType<CharacterManager>();
         lcharactors = new List<CharacterManager>(charactors);
+        lenemyCharactors.Clear();
+        lplayerCharactors.Clear();
         for(int i = 0 ; i < lcharactors.Count ; i++)
         {
             lcharactors[i].setTurn();
@@ -122,6 +121,15 @@ public class GameManager : MonoBehaviour
             newColor.a = 1.0f;
             lcharactors[i].GetComponent<SpriteRenderer>().color = newColor;
             lcharactors[i].State = STATE.WAIT;
+
+            if(lcharactors[i].getTag() == "Enemy")
+            {
+                lenemyCharactors.Add(lcharactors[i]);
+            }
+            else if(lcharactors[i].getTag() == "Player")
+            {
+                lplayerCharactors.Add(lcharactors[i]);
+            }
         }
         //큰 순서대로 정렬
         lcharactors.Sort((a, b) => a.getTurn().CompareTo(b.getTurn())*(-1) );
@@ -147,25 +155,81 @@ public class GameManager : MonoBehaviour
                 progressChara = lcharactors[i];
                 Debug.Log("Progress Chara : " + progressChara.getName());
                 // 캐릭터의 행동
-                StartCoroutine(waitTurn(lcharactors[i]));
+                StartCoroutine(processTurn(lcharactors[i]));
                 break;
             }
         }
     }
 
-    private IEnumerator waitTurn(CharacterManager chara)
+    private IEnumerator processTurn(CharacterManager chara)
     {
-        Debug.Log(chara.getName() + " : Wait turn!");
+        Debug.Log(chara.getName() + " : Process turn!");
 
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(0.2f);
+        
+        // 몬스터일 경우
+        if(chara.tag == "Enemy")
+        {
+            //타겟을 선택
+            int targetIndex = 0;
+            float minHide = 100.0f;
+            for(int i = 0 ; i < lplayerCharactors.Count ; i++)
+            {
+                float rNum = Random.Range(0.0f, 2.0f);
+                rNum += lplayerCharactors[i].hide;
+                if(rNum < minHide)
+                {
+                    rNum = minHide;
+                    targetIndex = i;
+                }
+            }
+            chara.Attack(lplayerCharactors[targetIndex]);
+        }
+        // 플레이어일 경우
+        else if(chara.tag == "Player")
+        {
+            // 몹중에서 선택 또는 UI에서 직접 선택하도록 제작
+            // 일단 구현용 랜덤
+            //타겟을 선택
+            int targetIndex = 0;
+            float minHide = 100.0f;
+            for(int i = 0 ; i < lenemyCharactors.Count ; i++)
+            {
+                float rNum = Random.Range(0.0f, 2.0f);
+                rNum += lenemyCharactors[i].hide;
+                if(rNum < minHide)
+                {
+                    rNum = minHide;
+                    targetIndex = i;
+                }
+            }
+            chara.Attack(lenemyCharactors[targetIndex]);
+        }
+
+
+        // 턴 마침
+        chara.State = STATE.END;
         // 투명도를 조절
         Color newColor = chara.GetComponent<SpriteRenderer>().color;
         newColor.a = 0.3921f;
         chara.GetComponent<SpriteRenderer>().color = newColor;
-        // 턴 마침
-        chara.State = STATE.END;
 
         Debug.Log(chara.getName() + " : End turn!");
         isProcessing = false;
+
+        // 모든 캐릭터가 행동을 종료시 자동 setTurn()
+        int j = 0;
+        for(; j < lcharactors.Count ; j++)
+        {
+            if(lcharactors[j].State == STATE.WAIT)
+            {
+                Debug.Log("Wait 상태가 있습니다");
+                break;
+            }
+        }
+        if(j == lcharactors.Count)
+        {
+            mSetTurn();
+        }
     }
 }

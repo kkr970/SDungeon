@@ -239,8 +239,8 @@ MonoBehaviour:
   skeletopPrefab: {fileID: 7299161120560039649, guid: de5442d99748a4d47ab746f066c5929e,
     type: 3}
   playerTransform:
-  - {fileID: 308916603}
   - {fileID: 229096582}
+  - {fileID: 308916603}
   enemyTransform:
   - {fileID: 743975839}
   - {fileID: 857946797}
@@ -248,6 +248,7 @@ MonoBehaviour:
   playerNum: 0
   enemyNum: 0
   turnNum: 0
+  isProcessing: 0
 --- !u!4 &124206925
 Transform:
   m_ObjectHideFlags: 0
@@ -499,7 +500,7 @@ PrefabInstance:
     - target: {fileID: 7910551703768803995, guid: 2403acb3a26f8c346a24cfd14ffb2510,
         type: 3}
       propertyPath: m_Name
-      value: PlayerTransfrom2
+      value: PlayerTransfrom1
       objectReference: {fileID: 0}
     - target: {fileID: 8071823925839301101, guid: 2403acb3a26f8c346a24cfd14ffb2510,
         type: 3}
@@ -900,7 +901,7 @@ PrefabInstance:
     - target: {fileID: 7910551703768803995, guid: 2403acb3a26f8c346a24cfd14ffb2510,
         type: 3}
       propertyPath: m_Name
-      value: PlayerTransfrom1
+      value: PlayerTransfrom2
       objectReference: {fileID: 0}
     - target: {fileID: 8071823925839301101, guid: 2403acb3a26f8c346a24cfd14ffb2510,
         type: 3}

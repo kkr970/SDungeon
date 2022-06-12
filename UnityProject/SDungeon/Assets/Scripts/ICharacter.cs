@@ -10,4 +10,15 @@ public interface ICharacter
 
     //이름 반환
     string getName();
+
+    //공격함
+    void Attack(CharacterManager target);
+    //공격받음
+    /*
+    void Damage(int damage);
+    */
+    
+    //사망처리
+    void Dead();
+
 }

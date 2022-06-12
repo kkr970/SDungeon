@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1829476036128480554}
   m_Layer: 0
   m_Name: Skeletop
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -94,3 +94,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 635686f0ad923a449b57fe0ee5d7baac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turn: 0
+  maxHp: 0
+  curHp: 0
+  maxMp: 0
+  curMp: 0
+  power: 0
+  magic: 0
+  hide: 0
+  speed: 0
+  lucky: 0
+  wisdom: 0

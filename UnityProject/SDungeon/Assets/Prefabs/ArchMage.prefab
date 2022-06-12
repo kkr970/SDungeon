@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2119533072089420861}
   m_Layer: 0
   m_Name: ArchMage
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -94,4 +94,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2f1d1c9cfb461b4a97dbfae73141c82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
+  turn: 0
+  maxHp: 0
+  curHp: 0
+  maxMp: 0
+  curMp: 0
+  power: 0
+  magic: 0
+  hide: 0
+  speed: 0
+  lucky: 0
+  wisdom: 0
