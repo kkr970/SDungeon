@@ -215,7 +215,7 @@ public class GameManager : MonoBehaviour
         chara.GetComponent<SpriteRenderer>().color = newColor;
 
         Debug.Log(chara.getName() + " : End turn!");
-        isProcessing = false;
+        yield return new WaitForSeconds(0.2f);
 
         // 모든 캐릭터가 행동을 종료시 자동 setTurn()
         int j = 0;
@@ -231,5 +231,6 @@ public class GameManager : MonoBehaviour
         {
             mSetTurn();
         }
+        isProcessing = false;
     }
 }
