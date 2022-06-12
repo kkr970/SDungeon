@@ -30,11 +30,16 @@ public class GameManager : MonoBehaviour
     
     public int playerNum;
     public int enemyNum;
+    public int turnNum;
+
+    private bool isProcessing;
 
     void Awake()
     {
+        isProcessing = false;
         playerNum = 2; // 1, 2선택 또는 2 고정
         enemyNum = 3;  // 플레이어 수가 1이면2, 2면3 또는 3 고정
+        turnNum = 0;
     }
 
     void Start()
@@ -80,13 +85,16 @@ public class GameManager : MonoBehaviour
         {
             mSetTurn();
         }
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.S))
         {
             mGetTurn();
         }
-        if(Input.GetKeyDown(KeyCode.S))
+        if(Input.GetKeyDown(KeyCode.D))
         {
-
+            if(!isProcessing)
+            {
+                mProgressTurn();
+            }
         }
     }
 
@@ -94,12 +102,18 @@ public class GameManager : MonoBehaviour
     //턴의 순서를 정함
     void mSetTurn()
     {
-        Debug.Log("Input : A, SetTurn!");
+        Debug.Log("Input : SetTurn!");
+        turnNum += 1;
+        UIManager.instance.UpdateTurnText(turnNum);
+        
         charactors = FindObjectsOfType<CharacterManager>();
         lcharactors = new List<CharacterManager>(charactors);
         for(int i = 0 ; i < lcharactors.Count ; i++)
         {
             lcharactors[i].setTurn();
+            Color newColor = lcharactors[i].GetComponent<SpriteRenderer>().color;
+            newColor.a = 1.0f;
+            lcharactors[i].GetComponent<SpriteRenderer>().color = newColor;
             lcharactors[i].State = STATE.WAIT;
         }
         //큰 순서대로 정렬
@@ -107,7 +121,7 @@ public class GameManager : MonoBehaviour
     }
     void mGetTurn()
     {
-        Debug.Log("Input : space, GetTurn!");
+        Debug.Log("Input : GetTurn!");
         for(int i = 0 ; i < lcharactors.Count ; i++)
         {
             Debug.Log(lcharactors[i].getName() + " " + lcharactors[i].getTurn());
@@ -116,6 +130,28 @@ public class GameManager : MonoBehaviour
     }
     void mProgressTurn()
     {
-
+        Debug.Log("Input : ProgressTurn!");
+        CharacterManager progressChara = null;
+        int i = 0;
+        for( ; i < lcharactors.Count ; i++)
+        {
+            if(lcharactors[i].State == STATE.WAIT)
+            {
+                progressChara = lcharactors[i];
+                Debug.Log("Progress Chara : " + progressChara.getName());
+                // 캐릭터의 행동
+                // 투명도를 조절
+                Color newColor = lcharactors[i].GetComponent<SpriteRenderer>().color;
+                newColor.a = 0.3921f;
+                lcharactors[i].GetComponent<SpriteRenderer>().color = newColor;
+                progressChara.State = STATE.END;
+                break;
+            }
+        }
+        if(i >= lcharactors.Count - 1)
+        {
+            mSetTurn();
+            return;
+        }
     }
 }
