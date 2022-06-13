@@ -17,7 +17,7 @@ public class ArchMage : CharacterManager
     }
     private void Start()
     {
-        maxHp = power + 3;
+        maxHp = power + 2;
         curHp = maxHp;
 
         maxMp = magic+ 2;

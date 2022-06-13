@@ -18,6 +18,7 @@ public interface ICharacter
     //mp사용
     void useMp(int mp);
 
+
     //hp, mp바 업데이트
     void updateHpBar();
     void updateMpBar();

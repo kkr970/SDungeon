@@ -16,10 +16,33 @@ public class UIManager : MonoBehaviour
     }
     private static UIManager uim_instance;
 
+    //Battle UI
+    public GameObject battleUI;
     public Text turnText;
 
-    public void UpdateTurnText(int newTurn)
+    //GameOver UI
+    public GameObject gameOverUI;
+
+    //GameWin UI
+    public GameObject gameWinUI;
+    
+    //Battle UI 메서드
+    public void updateTurnText(int newTurn)
     {
         turnText.text = "Turn : " + newTurn;
+    }
+
+    //GameOver UI 메서드
+    public void gameOver()
+    {
+        battleUI.SetActive(false);
+        gameOverUI.SetActive(true);
+    }
+
+    //GameWin UI 메서드
+    public void gameWin()
+    {
+        battleUI.SetActive(false);
+        gameWinUI.SetActive(true);
     }
 }

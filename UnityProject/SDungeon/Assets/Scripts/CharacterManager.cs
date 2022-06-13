@@ -141,11 +141,12 @@ public class CharacterManager : MonoBehaviour, ICharacter
 
 
 
-    // 오브젝트 이름 가져오기
+    // 오브젝트 이름 반환
     public string getName()
     {
         return gameObject.name;
     }
+    // 오브젝트 태그 반환
     public string getTag()
     {
         return gameObject.tag;

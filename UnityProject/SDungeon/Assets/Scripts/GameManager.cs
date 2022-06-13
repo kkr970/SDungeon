@@ -1,6 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
+
+enum GAMESTATE
+{
+    BATTLE,
+    WIN,
+    LOSE,
+    MENU
+}
 
 public class GameManager : MonoBehaviour
 {   
@@ -32,16 +41,18 @@ public class GameManager : MonoBehaviour
     
     public int playerNum;
     public int enemyNum;
-    public int turnNum;
+    public int roundNum;
 
     public bool isProcessing;
+    private GAMESTATE gState;
 
     void Awake()
     {
         isProcessing = false;
+        gState = GAMESTATE.BATTLE;
         playerNum = 2; // 1, 2선택 또는 2 고정
         enemyNum = 3;  // 플레이어 수가 1이면2, 2면3 또는 3 고정
-        turnNum = 0;
+        roundNum = 0;
     }
 
     void Start()
@@ -83,21 +94,52 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        // 임시 코드 확인용 버튼
-        if(Input.GetKeyDown(KeyCode.A))
+        if(gState == GAMESTATE.BATTLE)
         {
-            mSetTurn();
-        }
-        if(Input.GetKeyDown(KeyCode.S))
-        {
-            mGetTurn();
-        }
-        if(Input.GetKeyDown(KeyCode.D))
-        {
-            if(!isProcessing)
+            // 임시 코드 확인용 버튼
+            if(Input.GetKeyDown(KeyCode.A))
             {
-                isProcessing = true;
-                mProgressTurn();
+                mSetTurn();
+            }
+            if(Input.GetKeyDown(KeyCode.S))
+            {
+                mGetTurn();
+            }
+            if(Input.GetKeyDown(KeyCode.D))
+            {
+                if(!isProcessing)
+                {
+                    isProcessing = true;
+                    mProgressTurn();
+                }
+            }
+            //플레이어 전부 사망
+            if(lplayerCharactors.Count <= 0)
+            {
+                gState = GAMESTATE.LOSE;
+                UIManager.instance.gameOver();
+            }
+            //몹 전부 사망
+            if(lenemyCharactors.Count <= 0)
+            {
+                gState = GAMESTATE.WIN;
+                UIManager.instance.gameWin();
+            }
+        }
+        //패배
+        if(gState == GAMESTATE.LOSE)
+        {
+            if(Input.GetKeyDown(KeyCode.R))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+        }
+        //승리
+        if(gState == GAMESTATE.WIN)
+        {
+            if(Input.GetKeyDown(KeyCode.R))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
     }
@@ -107,8 +149,8 @@ public class GameManager : MonoBehaviour
     void mSetTurn()
     {
         Debug.Log("Input : SetTurn!");
-        turnNum += 1;
-        UIManager.instance.UpdateTurnText(turnNum);
+        roundNum += 1;
+        UIManager.instance.updateTurnText(roundNum);
         
         charactors = FindObjectsOfType<CharacterManager>();
         lcharactors = new List<CharacterManager>(charactors);
@@ -165,7 +207,7 @@ public class GameManager : MonoBehaviour
     {
         //Debug.Log(chara.getName() + " : Process turn!");
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
         
         // 몬스터일 경우
         if(chara.tag == "Enemy")
@@ -218,7 +260,7 @@ public class GameManager : MonoBehaviour
         chara.GetComponent<SpriteRenderer>().color = newColor;
 
         Debug.Log(chara.getName() + " : End turn!");
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
 
         // 모든 캐릭터가 행동을 종료시 자동 setTurn()
         int j = 0;

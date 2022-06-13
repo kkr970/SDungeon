@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // 기사
+// 특성 : 다른 플레이어보다 힘비례 체력이 높음
 public class Knight : CharacterManager
 {
     private void Awake()
