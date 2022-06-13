@@ -8,7 +8,7 @@ public class Zombur : CharacterManager
 {
     private void Awake()
     {
-        power = 4;
+        power = 3;
         magic = 0;
         hide = 0;
         speed = 2;
@@ -45,8 +45,9 @@ public class Zombur : CharacterManager
         //좀버의 특성 발동
         if(curMp > 0)
         {
-            curMp--;
+            useMp(1);
             curHp = maxHp;
+            updateHpBar();
             return;
         }
         base.Dead();

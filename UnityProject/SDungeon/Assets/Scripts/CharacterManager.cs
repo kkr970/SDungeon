@@ -17,20 +17,21 @@ public class CharacterManager : MonoBehaviour, ICharacter
     private STATE state = STATE.END;
     public float turnSpeed { get; private set; }
 
+    // 스텟, 능력치
     public float turn = 0f;
     public int maxHp;
     public int curHp;
     public int maxMp;
     public int curMp;
-    // 각 2줄씩 합해서 7
     public int power;
     public int magic;
-    //
     public int hide;
     public int speed;
-    //
     public int lucky;
     public int wisdom;
+    // Hp, Mp bar
+    public Transform hpBar;
+    public Transform mpBar;
 
     // -------------메서드----------------
     // state 관련
@@ -92,7 +93,7 @@ public class CharacterManager : MonoBehaviour, ICharacter
         if(damage > 0)
         {
             Debug.Log(this.getName() + " : Attack " + target.getName() + " " + damage + "Damage!");
-            target.curHp -= damage;
+            target.onDamage(damage);
             // 타겟의 현재 hp를 확인
             if(target.curHp <= 0)
             {
@@ -104,13 +105,31 @@ public class CharacterManager : MonoBehaviour, ICharacter
             Debug.Log("Miss!");
         }
     }
-    /*
     //공격받음
-    public virtual void Damage(int damage)
+    public virtual void onDamage(int damage)
     {
-        Debug.Log("Attacked ( "+damage+" )Damage");
+        curHp -= damage;
+        if(curHp < 0) curHp = 0;
+        updateHpBar();
     }
-    */
+
+    //mp사용
+    public virtual void useMp(int mp)
+    {
+        curMp -= mp;
+        if(curMp < 0) curMp = 0;
+        updateMpBar();
+    }
+
+    //mp, hp바 업데이트
+    public virtual void updateHpBar()
+    {
+        hpBar.localScale = new Vector3((float)curHp/maxHp, 1.0f, 1.0f);
+    }
+    public virtual void updateMpBar()
+    {
+        mpBar.localScale = new Vector3((float)curMp/maxMp, 1.0f, 1.0f);
+    }
 
     //사망처리
     public virtual void Dead()

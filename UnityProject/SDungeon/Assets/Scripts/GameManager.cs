@@ -136,7 +136,7 @@ public class GameManager : MonoBehaviour
     }
     void mGetTurn()
     {
-        Debug.Log("Input : GetTurn!");
+        //Debug.Log("Input : GetTurn!");
         for(int i = 0 ; i < lcharactors.Count ; i++)
         {
             Debug.Log(lcharactors[i].getName() + " " + lcharactors[i].getTurn());
@@ -145,7 +145,7 @@ public class GameManager : MonoBehaviour
     }
     void mProgressTurn()
     {
-        Debug.Log("Input : ProgressTurn!");
+        //Debug.Log("Input : ProgressTurn!");
         CharacterManager progressChara = null;
 
         for(int i = 0 ; i < lcharactors.Count ; i++)
@@ -163,18 +163,19 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator processTurn(CharacterManager chara)
     {
-        Debug.Log(chara.getName() + " : Process turn!");
+        //Debug.Log(chara.getName() + " : Process turn!");
 
         yield return new WaitForSeconds(0.2f);
         
         // 몬스터일 경우
         if(chara.tag == "Enemy")
         {
-            //타겟을 선택
+            // 타겟을 선택
             int targetIndex = 0;
             float minHide = 100.0f;
             for(int i = 0 ; i < lplayerCharactors.Count ; i++)
             {
+                if(lplayerCharactors[i].State == STATE.DEAD) continue;
                 float rNum = Random.Range(0.0f, 2.0f);
                 rNum += lplayerCharactors[i].hide;
                 if(rNum < minHide)
@@ -190,11 +191,12 @@ public class GameManager : MonoBehaviour
         {
             // 몹중에서 선택 또는 UI에서 직접 선택하도록 제작
             // 일단 구현용 랜덤
-            //타겟을 선택
+            // 타겟을 선택
             int targetIndex = 0;
             float minHide = 100.0f;
             for(int i = 0 ; i < lenemyCharactors.Count ; i++)
             {
+                if(lenemyCharactors[i].State == STATE.DEAD) continue;
                 float rNum = Random.Range(0.0f, 2.0f);
                 rNum += lenemyCharactors[i].hide;
                 if(rNum < minHide)
@@ -203,6 +205,7 @@ public class GameManager : MonoBehaviour
                     targetIndex = i;
                 }
             }
+            //공격
             chara.Attack(lenemyCharactors[targetIndex]);
         }
 
@@ -223,7 +226,7 @@ public class GameManager : MonoBehaviour
         {
             if(lcharactors[j].State == STATE.WAIT)
             {
-                Debug.Log("Wait 상태가 있습니다");
+                //Debug.Log("Wait 상태가 있습니다");
                 break;
             }
         }

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,7 +16,7 @@ public class Knight : CharacterManager
     }
     private void Start()
     {
-        maxHp = power + 2;
+        maxHp = power + 3;
         curHp = maxHp;
 
         maxMp = magic+ 2;
@@ -34,11 +34,13 @@ public class Knight : CharacterManager
         return turn;
     }
 
+    // 공격
     public override void Attack(CharacterManager target)
     {
         base.Attack(target);
     }
 
+    // 사망처리
     public override void Dead()
     {
         base.Dead();

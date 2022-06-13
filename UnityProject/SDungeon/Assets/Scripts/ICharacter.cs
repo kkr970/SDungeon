@@ -14,9 +14,13 @@ public interface ICharacter
     //공격함
     void Attack(CharacterManager target);
     //공격받음
-    /*
-    void Damage(int damage);
-    */
+    void onDamage(int damage);
+    //mp사용
+    void useMp(int mp);
+
+    //hp, mp바 업데이트
+    void updateHpBar();
+    void updateMpBar();
     
     //사망처리
     void Dead();

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // 아크메이지
+// 특성 : 공격받을 때, 50%(내림)만큼 mp가 대신 줄어듬
 public class ArchMage : CharacterManager
 {
     private void Awake()
     {
-        power = 5;
-        magic = 2;
+        power = 3;
+        magic = 5;
         hide = 3;
         speed = 4;
         lucky = 7;
@@ -16,7 +17,7 @@ public class ArchMage : CharacterManager
     }
     private void Start()
     {
-        maxHp = power + 2;
+        maxHp = power + 3;
         curHp = maxHp;
 
         maxMp = magic+ 2;
@@ -37,6 +38,18 @@ public class ArchMage : CharacterManager
     public override void Attack(CharacterManager target)
     {
         base.Attack(target);
+    }
+    public override void onDamage(int damage)
+    {
+        int mpDamage = damage/2;
+        if(mpDamage > curMp)
+        {
+            mpDamage = curMp;
+        }
+        damage -= mpDamage;
+
+        base.onDamage(damage);
+        useMp(mpDamage);
     }
 
     public override void Dead()

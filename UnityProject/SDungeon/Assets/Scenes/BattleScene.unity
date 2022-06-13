@@ -228,8 +228,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a87266e1844fc394aa580d4e891b8238, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  charactors: []
   lcharactors: []
+  lplayerCharactors: []
+  lenemyCharactors: []
   knightPrefab: {fileID: 370121645168825567, guid: cffccae2931d14a4caa643413d78a961,
     type: 3}
   archmagePrefab: {fileID: 2113228052767358806, guid: f41aad5e4ac38d2479b10020ec0f2a59,
@@ -647,7 +648,7 @@ GameObject:
   - component: {fileID: 1502298933}
   - component: {fileID: 1502298937}
   m_Layer: 5
-  m_Name: UI
+  m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
