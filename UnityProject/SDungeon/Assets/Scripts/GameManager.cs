@@ -95,6 +95,18 @@ public class GameManager : MonoBehaviour
     {
         if(gState == GAMESTATE.BATTLE)
         {
+            //플레이어 전부 사망
+            if(lplayerCharacters.Count <= 0)
+            {
+                gState = GAMESTATE.LOSE;
+                UIManager.instance.gameOver();
+            }
+            //몹 전부 사망
+            if(lenemyCharacters.Count <= 0)
+            {
+                gState = GAMESTATE.WIN;
+                UIManager.instance.gameWin();
+            }
             // 임시 코드 확인용 버튼
             // 턴 정하기
             if(Input.GetKeyDown(KeyCode.A))
@@ -114,18 +126,6 @@ public class GameManager : MonoBehaviour
                     isProcessing = true;
                     mProgressTurn();
                 }
-            }
-            //플레이어 전부 사망
-            if(lplayerCharacters.Count <= 0)
-            {
-                gState = GAMESTATE.LOSE;
-                UIManager.instance.gameOver();
-            }
-            //몹 전부 사망
-            if(lenemyCharacters.Count <= 0)
-            {
-                gState = GAMESTATE.WIN;
-                UIManager.instance.gameWin();
             }
         }
         //패배
