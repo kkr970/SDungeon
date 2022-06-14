@@ -7,8 +7,7 @@ enum GAMESTATE
 {
     BATTLE,
     WIN,
-    LOSE,
-    MENU
+    LOSE
 }
 
 public class GameManager : MonoBehaviour
@@ -26,10 +25,10 @@ public class GameManager : MonoBehaviour
         }
     }
     
-    private CharacterManager[] charactors;
-    public List<CharacterManager> lcharactors;
-    public List<CharacterManager> lplayerCharactors;
-    public List<CharacterManager> lenemyCharactors;
+    private CharacterManager[] characters;
+    public List<CharacterManager> lcharacters;
+    public List<CharacterManager> lplayerCharacters;
+    public List<CharacterManager> lenemyCharacters;
 
     public GameObject knightPrefab;
     public GameObject archmagePrefab;
@@ -51,7 +50,7 @@ public class GameManager : MonoBehaviour
         isProcessing = false;
         gState = GAMESTATE.BATTLE;
         playerNum = 2; // 1, 2선택 또는 2 고정
-        enemyNum = 3;  // 플레이어 수가 1이면2, 2면3 또는 3 고정
+        enemyNum = 3;  // 플레이어:적 / 1:2 / 2:3 / x:3
         roundNum = 0;
     }
 
@@ -97,14 +96,17 @@ public class GameManager : MonoBehaviour
         if(gState == GAMESTATE.BATTLE)
         {
             // 임시 코드 확인용 버튼
+            // 턴 정하기
             if(Input.GetKeyDown(KeyCode.A))
             {
                 mSetTurn();
             }
+            // 상태보기
             if(Input.GetKeyDown(KeyCode.S))
             {
                 mGetTurn();
             }
+            // 턴 진행하기
             if(Input.GetKeyDown(KeyCode.D))
             {
                 if(!isProcessing)
@@ -114,13 +116,13 @@ public class GameManager : MonoBehaviour
                 }
             }
             //플레이어 전부 사망
-            if(lplayerCharactors.Count <= 0)
+            if(lplayerCharacters.Count <= 0)
             {
                 gState = GAMESTATE.LOSE;
                 UIManager.instance.gameOver();
             }
             //몹 전부 사망
-            if(lenemyCharactors.Count <= 0)
+            if(lenemyCharacters.Count <= 0)
             {
                 gState = GAMESTATE.WIN;
                 UIManager.instance.gameWin();
@@ -152,52 +154,70 @@ public class GameManager : MonoBehaviour
         roundNum += 1;
         UIManager.instance.updateTurnText(roundNum);
         
-        charactors = FindObjectsOfType<CharacterManager>();
-        lcharactors = new List<CharacterManager>(charactors);
-        lenemyCharactors.Clear();
-        lplayerCharactors.Clear();
-        for(int i = 0 ; i < lcharactors.Count ; i++)
+        characters = FindObjectsOfType<CharacterManager>();
+        lcharacters = new List<CharacterManager>(characters);
+        lenemyCharacters.Clear();
+        lplayerCharacters.Clear();
+        for(int i = 0 ; i < lcharacters.Count ; i++)
         {
-            lcharactors[i].setTurn();
-            Color newColor = lcharactors[i].GetComponent<SpriteRenderer>().color;
+            lcharacters[i].setTurn();
+            Color newColor = lcharacters[i].GetComponent<SpriteRenderer>().color;
             newColor.a = 1.0f;
-            lcharactors[i].GetComponent<SpriteRenderer>().color = newColor;
-            lcharactors[i].State = STATE.WAIT;
+            lcharacters[i].GetComponent<SpriteRenderer>().color = newColor;
+            lcharacters[i].State = STATE.WAIT;
 
-            if(lcharactors[i].getTag() == "Enemy")
+            if(lcharacters[i].getTag() == "Enemy")
             {
-                lenemyCharactors.Add(lcharactors[i]);
+                lenemyCharacters.Add(lcharacters[i]);
             }
-            else if(lcharactors[i].getTag() == "Player")
+            else if(lcharacters[i].getTag() == "Player")
             {
-                lplayerCharactors.Add(lcharactors[i]);
+                lplayerCharacters.Add(lcharacters[i]);
             }
         }
         //큰 순서대로 정렬
-        lcharactors.Sort((a, b) => a.getTurn().CompareTo(b.getTurn())*(-1) );
+        lcharacters.Sort((a, b) => a.getTurn().CompareTo(b.getTurn())*(-1) );
+        //턴 알림
+        if(lcharacters.Count >= 1)
+        {
+            lcharacters[0].onNowTurn();
+        }
+        if(lcharacters.Count >= 2)
+        {
+            lcharacters[1].onNextTurn();
+        }
     }
     void mGetTurn()
     {
         //Debug.Log("Input : GetTurn!");
-        for(int i = 0 ; i < lcharactors.Count ; i++)
+        for(int i = 0 ; i < lcharacters.Count ; i++)
         {
-            Debug.Log(lcharactors[i].getName() + " " + lcharactors[i].getTurn());
-            Debug.Log(lcharactors[i].State);
+            Debug.Log(lcharacters[i].getName() + " " + lcharacters[i].getTurn());
+            Debug.Log(lcharacters[i].State);
         }
     }
     void mProgressTurn()
     {
         //Debug.Log("Input : ProgressTurn!");
-        CharacterManager progressChara = null;
-
-        for(int i = 0 ; i < lcharactors.Count ; i++)
+        for(int i = 0 ; i < lcharacters.Count ; i++)
         {
-            if(lcharactors[i].State == STATE.WAIT)
+            if(lcharacters[i].State == STATE.WAIT)
             {
-                progressChara = lcharactors[i];
-                Debug.Log("Progress Chara : " + progressChara.getName());
+                Debug.Log("Progress Chara : " + lcharacters[i].getName());
+                lcharacters[i].onNowTurn();
                 // 캐릭터의 행동
-                StartCoroutine(processTurn(lcharactors[i]));
+                StartCoroutine(processTurn(lcharacters[i]));
+                lcharacters[i].offNowTurn();
+
+                //턴 알림
+                if(i < lcharacters.Count - 1)
+                {
+                    lcharacters[i+1].onNowTurn();
+                }
+                if(i < lcharacters.Count - 2)
+                {
+                    lcharacters[i+2].onNextTurn();
+                }
                 break;
             }
         }
@@ -206,7 +226,6 @@ public class GameManager : MonoBehaviour
     private IEnumerator processTurn(CharacterManager chara)
     {
         //Debug.Log(chara.getName() + " : Process turn!");
-
         yield return new WaitForSeconds(0.1f);
         
         // 몬스터일 경우
@@ -215,18 +234,18 @@ public class GameManager : MonoBehaviour
             // 타겟을 선택
             int targetIndex = 0;
             float minHide = 100.0f;
-            for(int i = 0 ; i < lplayerCharactors.Count ; i++)
+            for(int i = 0 ; i < lplayerCharacters.Count ; i++)
             {
-                if(lplayerCharactors[i].State == STATE.DEAD) continue;
+                if(lplayerCharacters[i].State == STATE.DEAD) continue;
                 float rNum = Random.Range(0.0f, 2.0f);
-                rNum += lplayerCharactors[i].hide;
+                rNum += lplayerCharacters[i].hide;
                 if(rNum < minHide)
                 {
                     rNum = minHide;
                     targetIndex = i;
                 }
             }
-            chara.Attack(lplayerCharactors[targetIndex]);
+            chara.Attack(lplayerCharacters[targetIndex]);
         }
         // 플레이어일 경우
         else if(chara.tag == "Player")
@@ -236,11 +255,11 @@ public class GameManager : MonoBehaviour
             // 타겟을 선택
             int targetIndex = 0;
             float minHide = 100.0f;
-            for(int i = 0 ; i < lenemyCharactors.Count ; i++)
+            for(int i = 0 ; i < lenemyCharacters.Count ; i++)
             {
-                if(lenemyCharactors[i].State == STATE.DEAD) continue;
+                if(lenemyCharacters[i].State == STATE.DEAD) continue;
                 float rNum = Random.Range(0.0f, 2.0f);
-                rNum += lenemyCharactors[i].hide;
+                rNum += lenemyCharacters[i].hide;
                 if(rNum < minHide)
                 {
                     rNum = minHide;
@@ -248,7 +267,7 @@ public class GameManager : MonoBehaviour
                 }
             }
             //공격
-            chara.Attack(lenemyCharactors[targetIndex]);
+            chara.Attack(lenemyCharacters[targetIndex]);
         }
 
 
@@ -264,15 +283,15 @@ public class GameManager : MonoBehaviour
 
         // 모든 캐릭터가 행동을 종료시 자동 setTurn()
         int j = 0;
-        for(; j < lcharactors.Count ; j++)
+        for(; j < lcharacters.Count ; j++)
         {
-            if(lcharactors[j].State == STATE.WAIT)
+            if(lcharacters[j].State == STATE.WAIT)
             {
                 //Debug.Log("Wait 상태가 있습니다");
                 break;
             }
         }
-        if(j == lcharactors.Count)
+        if(j == lcharacters.Count)
         {
             mSetTurn();
         }

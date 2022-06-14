@@ -29,9 +29,10 @@ public class CharacterManager : MonoBehaviour, ICharacter
     public int speed;
     public int lucky;
     public int wisdom;
-    // Hp, Mp bar
+    // Hp, Mp bar, NowTurn
     public Transform hpBar;
     public Transform mpBar;
+    public GameObject nowTurn;
 
     // -------------메서드----------------
     // state 관련
@@ -121,14 +122,32 @@ public class CharacterManager : MonoBehaviour, ICharacter
         updateMpBar();
     }
 
-    //mp, hp바 업데이트
-    public virtual void updateHpBar()
+    //mp바, hp바, 턴알림 업데이트
+    public void updateHpBar()
     {
         hpBar.localScale = new Vector3((float)curHp/maxHp, 1.0f, 1.0f);
     }
-    public virtual void updateMpBar()
+    public void updateMpBar()
     {
         mpBar.localScale = new Vector3((float)curMp/maxMp, 1.0f, 1.0f);
+    }
+    public void onNowTurn()
+    {
+        nowTurn.SetActive(true);
+        Color newColor = nowTurn.GetComponent<SpriteRenderer>().color;
+        newColor.a = 1.0f;
+        nowTurn.GetComponent<SpriteRenderer>().color = newColor;
+    }
+    public void onNextTurn()
+    {
+        nowTurn.SetActive(true);
+        Color newColor = nowTurn.GetComponent<SpriteRenderer>().color;
+        newColor.a = 0.5f;
+        nowTurn.GetComponent<SpriteRenderer>().color = newColor;
+    }
+    public void offNowTurn()
+    {
+        nowTurn.SetActive(false);
     }
 
     //사망처리
