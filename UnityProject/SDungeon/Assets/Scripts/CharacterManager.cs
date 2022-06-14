@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public enum STATE
 {
@@ -111,7 +113,21 @@ public class CharacterManager : MonoBehaviour, ICharacter
     {
         curHp -= damage;
         if(curHp < 0) curHp = 0;
+        StartCoroutine(hitMotion());
         updateHpBar();
+    }
+    //공격받는 모션
+    private IEnumerator hitMotion()
+    {
+        Color oriColor = this.GetComponent<SpriteRenderer>().color;
+        Color newColor = oriColor;
+        newColor.g = 0.5f;
+        newColor.b = 0.5f;
+        this.GetComponent<SpriteRenderer>().color = newColor;
+
+        yield return new WaitForSeconds(0.29f);
+
+        this.GetComponent<SpriteRenderer>().color = oriColor;
     }
 
     //mp사용

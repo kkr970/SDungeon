@@ -226,7 +226,6 @@ public class GameManager : MonoBehaviour
     private IEnumerator processTurn(CharacterManager chara)
     {
         //Debug.Log(chara.getName() + " : Process turn!");
-        yield return new WaitForSeconds(0.1f);
         
         // 몬스터일 경우
         if(chara.tag == "Enemy")
@@ -279,7 +278,7 @@ public class GameManager : MonoBehaviour
         chara.GetComponent<SpriteRenderer>().color = newColor;
 
         Debug.Log(chara.getName() + " : End turn!");
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.3f);
 
         // 모든 캐릭터가 행동을 종료시 자동 setTurn()
         int j = 0;
