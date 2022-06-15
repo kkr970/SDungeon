@@ -46,4 +46,10 @@ public class Knight : CharacterManager
     {
         base.Dead();
     }
+
+    // 이름가져오기
+    public override string getName()
+    {
+        return "Knight";
+    }
 }

@@ -95,7 +95,9 @@ public class CharacterManager : MonoBehaviour, ICharacter
         // 데미지 적용
         if(damage > 0)
         {
-            Debug.Log(this.getName() + " : Attack " + target.getName() + " " + damage + "Damage!");
+            Debug.Log(this.getObjectName() + " : Attack " + target.getObjectName() + " " + damage + "Damage!");
+            UIManager.instance.updateLogText(this.getObjectName() + " Attack -> " + target.getObjectName()
+                                + " : " + damage + "Damage!" + System.Environment.NewLine);
             target.onDamage(damage);
             // 타겟의 현재 hp를 확인
             if(target.curHp <= 0)
@@ -106,6 +108,9 @@ public class CharacterManager : MonoBehaviour, ICharacter
         else
         {
             Debug.Log("Miss!");
+            UIManager.instance.updateLogText(this.getObjectName() + " Attack -> " + target.getObjectName()
+                                + " : " + "Miss!" + System.Environment.NewLine);
+
         }
     }
     //공격받음
@@ -170,16 +175,20 @@ public class CharacterManager : MonoBehaviour, ICharacter
     public virtual void Dead()
     {
         State = STATE.DEAD;
+        UIManager.instance.updateLogText(this.getObjectName() + " Dead!" + System.Environment.NewLine);
         this.gameObject.SetActive(false);
     }
     
 
-
-
     // 오브젝트 이름 반환
-    public string getName()
+    public string getObjectName()
     {
         return gameObject.name;
+    }
+    // 이름 반환
+    public virtual string getName()
+    {
+        return "CharacterManager";
     }
     // 오브젝트 태그 반환
     public string getTag()

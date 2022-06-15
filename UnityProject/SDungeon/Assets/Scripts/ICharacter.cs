@@ -25,5 +25,4 @@ public interface ICharacter
     
     //사망처리
     void Dead();
-
 }

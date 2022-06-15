@@ -30,10 +30,8 @@ public class GameManager : MonoBehaviour
     public List<CharacterManager> lplayerCharacters;
     public List<CharacterManager> lenemyCharacters;
 
-    public GameObject knightPrefab;
-    public GameObject archmagePrefab;
-    public GameObject zomburPrefab;
-    public GameObject skeletopPrefab;
+    public GameObject[] playerPrefabs;
+    public GameObject[] enemyPrefabs;
     
     public Transform[] playerTransform;
     public Transform[] enemyTransform;
@@ -58,65 +56,29 @@ public class GameManager : MonoBehaviour
     {
         for(int i = 0 ; i < playerNum ; i++)
         {
-            int num = Random.Range(0, 2);
-            switch(num)
-            {
-                case 0:
-                    Instantiate(knightPrefab, playerTransform[i]);
-                    break;
-                case 1:
-                    Instantiate(archmagePrefab, playerTransform[i]);
-                    break;
-                default:
-                    Debug.LogWarning("에러 발생 - 플레이어 생성");
-                    break;
-            }
+            int num = Random.Range(0, playerPrefabs.Length);
+            GameObject i0 = Instantiate(playerPrefabs[num], playerTransform[i]);
+            i0.name = (i+1) + "." + i0.GetComponent<CharacterManager>().getName();
         }
         for(int i = 0 ; i < enemyNum ; i++)
         {
-            int num = Random.Range(0, 2);
-            switch(num)
-            {
-                case 0:
-                    Instantiate(zomburPrefab, enemyTransform[i]);
-                    break;
-                case 1:
-                    Instantiate(skeletopPrefab, enemyTransform[i]);
-                    break;
-                default:
-                    Debug.LogWarning("에러 발생 - 적 생성");
-                    break;
-            }
+            int num = Random.Range(0, enemyPrefabs.Length);
+            GameObject i0 = Instantiate(enemyPrefabs[num], enemyTransform[i]);
+            i0.name = (i+1) + "." + i0.GetComponent<CharacterManager>().getName();
         }
         mSetTurn();
+        findPlayerEnemy();
     }
 
     void Update()
     {
         if(gState == GAMESTATE.BATTLE)
         {
-            //플레이어 전부 사망
-            if(lplayerCharacters.Count <= 0)
-            {
-                gState = GAMESTATE.LOSE;
-                UIManager.instance.gameOver();
-            }
-            //몹 전부 사망
-            if(lenemyCharacters.Count <= 0)
-            {
-                gState = GAMESTATE.WIN;
-                UIManager.instance.gameWin();
-            }
-            // 임시 코드 확인용 버튼
+            // 임시 코드 확인용 버튼 A : 세팅 / D : 턴진행
             // 턴 정하기
             if(Input.GetKeyDown(KeyCode.A))
             {
                 mSetTurn();
-            }
-            // 상태보기
-            if(Input.GetKeyDown(KeyCode.S))
-            {
-                mGetTurn();
             }
             // 턴 진행하기
             if(Input.GetKeyDown(KeyCode.D))
@@ -156,8 +118,6 @@ public class GameManager : MonoBehaviour
         
         characters = FindObjectsOfType<CharacterManager>();
         lcharacters = new List<CharacterManager>(characters);
-        lenemyCharacters.Clear();
-        lplayerCharacters.Clear();
         for(int i = 0 ; i < lcharacters.Count ; i++)
         {
             lcharacters[i].setTurn();
@@ -165,15 +125,6 @@ public class GameManager : MonoBehaviour
             newColor.a = 1.0f;
             lcharacters[i].GetComponent<SpriteRenderer>().color = newColor;
             lcharacters[i].State = STATE.WAIT;
-
-            if(lcharacters[i].getTag() == "Enemy")
-            {
-                lenemyCharacters.Add(lcharacters[i]);
-            }
-            else if(lcharacters[i].getTag() == "Player")
-            {
-                lplayerCharacters.Add(lcharacters[i]);
-            }
         }
         //큰 순서대로 정렬
         lcharacters.Sort((a, b) => a.getTurn().CompareTo(b.getTurn())*(-1) );
@@ -187,15 +138,8 @@ public class GameManager : MonoBehaviour
             lcharacters[1].onNextTurn();
         }
     }
-    void mGetTurn()
-    {
-        //Debug.Log("Input : GetTurn!");
-        for(int i = 0 ; i < lcharacters.Count ; i++)
-        {
-            Debug.Log(lcharacters[i].getName() + " " + lcharacters[i].getTurn());
-            Debug.Log(lcharacters[i].State);
-        }
-    }
+
+    // 턴 진행
     void mProgressTurn()
     {
         //Debug.Log("Input : ProgressTurn!");
@@ -208,6 +152,10 @@ public class GameManager : MonoBehaviour
                 // 캐릭터의 행동
                 StartCoroutine(processTurn(lcharacters[i]));
                 lcharacters[i].offNowTurn();
+
+                // 행동 종료 후처리
+                // 캐릭터들이 살아있는지 확인하기 위한 작업
+                findPlayerEnemy();
 
                 //턴 알림
                 if(i < lcharacters.Count - 1)
@@ -222,7 +170,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-
+    //턴 진행 코루틴
     private IEnumerator processTurn(CharacterManager chara)
     {
         //Debug.Log(chara.getName() + " : Process turn!");
@@ -296,4 +244,36 @@ public class GameManager : MonoBehaviour
         }
         isProcessing = false;
     }
+
+    // 현재 캐릭터가 있는지 확인, 게임 승리, 게임 오버의 상태이전을 가지고있음
+    private void findPlayerEnemy()
+    {
+        lenemyCharacters.Clear();
+        lplayerCharacters.Clear();
+        for(int i = 0 ; i < lcharacters.Count ; i++)
+        {
+            if(lcharacters[i].State == STATE.DEAD) continue;
+            if(lcharacters[i].getTag() == "Enemy")
+            {
+                lenemyCharacters.Add(lcharacters[i]);
+            }
+            else if(lcharacters[i].getTag() == "Player")
+            {
+                lplayerCharacters.Add(lcharacters[i]);
+            }
+        }
+        //플레이어 전부 사망
+        if(lplayerCharacters.Count <= 0)
+        {
+            gState = GAMESTATE.LOSE;
+            UIManager.instance.gameOver();
+        }
+        //몹 전부 사망
+        if(lenemyCharacters.Count <= 0)
+        {
+            gState = GAMESTATE.WIN;
+            UIManager.instance.gameWin();
+        }
+    }
+    
 }
