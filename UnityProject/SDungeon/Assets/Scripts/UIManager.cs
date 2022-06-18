@@ -18,6 +18,7 @@ public class UIManager : MonoBehaviour
 
     //Battle UI
     public GameObject battleUI;
+    public GameObject actionSelectUI;
     public ScrollRect logScroll;
     public Text turnText;
 
@@ -33,6 +34,17 @@ public class UIManager : MonoBehaviour
     {
         turnText.text = "Turn : " + newTurn;
     }
+    
+        //행동 선택 UI on/off
+    public void actionSelectUI_ON()
+    {
+        actionSelectUI.SetActive(true);
+    }
+    public void actionSelectUI_OFF()
+    {
+        actionSelectUI.SetActive(false);
+    }
+
         //로그 업데이트
     public void updateLogText(string log)
     {

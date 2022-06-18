@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine;
 
 enum GAMESTATE
@@ -25,23 +27,28 @@ public class GameManager : MonoBehaviour
         }
     }
     
-    private CharacterManager[] characters;
+    public CharacterManager[] characters;
     public List<CharacterManager> lcharacters;
     public List<CharacterManager> lplayerCharacters;
     public List<CharacterManager> lenemyCharacters;
 
+    // 프리팹, 생성 위치
     public GameObject[] playerPrefabs;
     public GameObject[] enemyPrefabs;
-    
     public Transform[] playerTransform;
     public Transform[] enemyTransform;
     
-    public int playerNum;
-    public int enemyNum;
-    public int roundNum;
+    //플레이어 수, 적 수, 라운드
+    private int playerNum;
+    private int enemyNum;
+    private int roundNum;
 
-    public bool isProcessing;
+    //각종 변수들
+    private bool isProcessing;
     private GAMESTATE gState;
+    private int targetIndex = 0;
+    private int actionIndex = 0; // 0=공격 1=스킬 2=스킵
+
 
     void Awake()
     {
@@ -74,16 +81,16 @@ public class GameManager : MonoBehaviour
     {
         if(gState == GAMESTATE.BATTLE)
         {
-            // 임시 코드 확인용 버튼 A : 세팅 / D : 턴진행
-            // 턴 정하기
-            if(Input.GetKeyDown(KeyCode.A))
+            if(!isProcessing)
             {
-                mSetTurn();
-            }
-            // 턴 진행하기
-            if(Input.GetKeyDown(KeyCode.D))
-            {
-                if(!isProcessing)
+                // 임시 코드 확인용 버튼 A : 세팅 / D : 턴진행
+                // 턴 정하기
+                if(Input.GetKeyDown(KeyCode.A))
+                {
+                    mSetTurn();
+                }
+                // 턴 진행하기
+                if(Input.GetKeyDown(KeyCode.D))
                 {
                     isProcessing = true;
                     mProgressTurn();
@@ -112,7 +119,7 @@ public class GameManager : MonoBehaviour
     //턴의 순서를 정함
     void mSetTurn()
     {
-        Debug.Log("Input : SetTurn!");
+        //Debug.Log("Input : SetTurn!");
         roundNum += 1;
         UIManager.instance.updateTurnText(roundNum);
         
@@ -129,14 +136,7 @@ public class GameManager : MonoBehaviour
         //큰 순서대로 정렬
         lcharacters.Sort((a, b) => a.getTurn().CompareTo(b.getTurn())*(-1) );
         //턴 알림
-        if(lcharacters.Count >= 1)
-        {
-            lcharacters[0].onNowTurn();
-        }
-        if(lcharacters.Count >= 2)
-        {
-            lcharacters[1].onNextTurn();
-        }
+        nextTurn(0);
     }
 
     // 턴 진행
@@ -147,39 +147,25 @@ public class GameManager : MonoBehaviour
         {
             if(lcharacters[i].State == STATE.WAIT)
             {
-                Debug.Log("Progress Chara : " + lcharacters[i].getName());
+                //Debug.Log("Progress Chara : " + lcharacters[i].getName());
                 lcharacters[i].onNowTurn();
                 // 캐릭터의 행동
-                StartCoroutine(processTurn(lcharacters[i]));
-                lcharacters[i].offNowTurn();
+                StartCoroutine(processTurn(lcharacters[i], i));
+                Debug.Log("코루틴 이후 함수 실행");
 
-                // 행동 종료 후처리
-                // 캐릭터들이 살아있는지 확인하기 위한 작업
-                findPlayerEnemy();
-
-                //턴 알림
-                if(i < lcharacters.Count - 1)
-                {
-                    lcharacters[i+1].onNowTurn();
-                }
-                if(i < lcharacters.Count - 2)
-                {
-                    lcharacters[i+2].onNextTurn();
-                }
                 break;
             }
         }
     }
     //턴 진행 코루틴
-    private IEnumerator processTurn(CharacterManager chara)
+    IEnumerator processTurn(CharacterManager chara, int index)
     {
         //Debug.Log(chara.getName() + " : Process turn!");
-        
+
         // 몬스터일 경우
         if(chara.tag == "Enemy")
         {
             // 타겟을 선택
-            int targetIndex = 0;
             float minHide = 100.0f;
             for(int i = 0 ; i < lplayerCharacters.Count ; i++)
             {
@@ -197,36 +183,46 @@ public class GameManager : MonoBehaviour
         // 플레이어일 경우
         else if(chara.tag == "Player")
         {
-            // 몹중에서 선택 또는 UI에서 직접 선택하도록 제작
-            // 일단 구현용 랜덤
-            // 타겟을 선택
-            int targetIndex = 0;
-            float minHide = 100.0f;
-            for(int i = 0 ; i < lenemyCharacters.Count ; i++)
+            // 행동 선택
+            UIManager.instance.actionSelectUI_ON();
+            yield return selectAction();
+            UIManager.instance.actionSelectUI_OFF();
+            
+                //공격
+            if(actionIndex == 0)
             {
-                if(lenemyCharacters[i].State == STATE.DEAD) continue;
-                float rNum = Random.Range(0.0f, 2.0f);
-                rNum += lenemyCharacters[i].hide;
-                if(rNum < minHide)
-                {
-                    rNum = minHide;
-                    targetIndex = i;
-                }
+                // 타겟을 선택
+                yield return StartCoroutine(selectTarget());
+                //공격
+                chara.Attack(lenemyCharacters[targetIndex]);
             }
-            //공격
-            chara.Attack(lenemyCharacters[targetIndex]);
+                //스킬
+            else if(actionIndex == 1)
+            {
+
+            }
+                //스킵, 마나 회복
+            else if(actionIndex == 2)
+            {
+                
+            }
         }
 
-
-        // 턴 마침
-        chara.State = STATE.END;
         // 투명도를 조절
         Color newColor = chara.GetComponent<SpriteRenderer>().color;
         newColor.a = 0.3921f;
         chara.GetComponent<SpriteRenderer>().color = newColor;
 
-        Debug.Log(chara.getName() + " : End turn!");
+        //Debug.Log(chara.getName() + " : End turn!");
         yield return new WaitForSeconds(0.3f);
+        // 캐릭터들이 살아있는지 확인하기 위한 작업
+        findPlayerEnemy();
+        // 턴 마침
+        chara.State = STATE.END;
+        isProcessing = false;
+        // 턴 알림
+        lcharacters[index].offNowTurn();
+        nextTurn(index);
 
         // 모든 캐릭터가 행동을 종료시 자동 setTurn()
         int j = 0;
@@ -242,8 +238,59 @@ public class GameManager : MonoBehaviour
         {
             mSetTurn();
         }
-        isProcessing = false;
+        
+        Debug.Log("코루틴 종료");
     }
+    // 행동 선택 
+    IEnumerator selectAction()
+    {
+        while(true)
+        {
+            if(Input.GetMouseButtonDown(0))
+            {
+                Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
+                GameObject clickObject = null;
+                if(hit.collider != null)
+                {
+                    clickObject = hit.transform.gameObject;
+                    Debug.Log("Click " + clickObject.name);
+                    if(clickObject.name == "Attack Button")
+                    {
+                        actionIndex = 0;
+                        break;
+                    }
+                }
+            }
+            yield return new WaitForSeconds(0.005f);
+        }
+    }
+    // 타겟 선택
+    IEnumerator selectTarget()
+    {
+        while(true)
+        {
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                int targetIndex = 0;
+                float minHide = 100.0f;
+                for(int i = 0 ; i < lenemyCharacters.Count ; i++)
+                {
+                    if(lenemyCharacters[i].State == STATE.DEAD) continue;
+                    float rNum = Random.Range(0.0f, 2.0f);
+                    rNum += lenemyCharacters[i].hide;
+                    if(rNum < minHide)
+                    {
+                        rNum = minHide;
+                        targetIndex = i;
+                    }
+                }
+                break;
+            }
+            yield return new WaitForSeconds(0.005f);
+        }
+    }
+    
 
     // 현재 캐릭터가 있는지 확인, 게임 승리, 게임 오버의 상태이전을 가지고있음
     private void findPlayerEnemy()
@@ -275,5 +322,26 @@ public class GameManager : MonoBehaviour
             UIManager.instance.gameWin();
         }
     }
-    
+    // 턴 알림
+    private void nextTurn(int i)
+    {        
+        for(; i < lcharacters.Count ; i++)
+        {
+            if(lcharacters[i].State == STATE.WAIT)
+            {
+                lcharacters[i].onNowTurn();
+                break;
+            }
+        }
+        i++;
+        for(; i < lcharacters.Count ; i++)
+        {
+            if(lcharacters[i].State == STATE.WAIT)
+            {
+                lcharacters[i].onNextTurn();
+                break;
+            }
+        }
+    }
+
 }
