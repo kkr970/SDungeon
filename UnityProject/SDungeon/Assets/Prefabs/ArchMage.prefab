@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2081639682361126559}
   - component: {fileID: 1811355309525715571}
   - component: {fileID: 2119533072089420861}
+  - component: {fileID: 7280465740764902387}
   m_Layer: 0
   m_Name: ArchMage
   m_TagString: Player
@@ -94,7 +95,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2113228052767358806}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2f1d1c9cfb461b4a97dbfae73141c82, type: 3}
+  m_Script: {fileID: 11500000, guid: b6ed3235426531e4bbfe6dc7b057c11d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   turn: 0
@@ -111,6 +112,32 @@ MonoBehaviour:
   hpBar: {fileID: 8441719246746376687}
   mpBar: {fileID: 1902785739475317578}
   nowTurn: {fileID: 2844376157469045845}
+--- !u!61 &7280465740764902387
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113228052767358806}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 2.5}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0}
+    oldSize: {x: 3.18, y: 5}
+    newSize: {x: 3.18, y: 5}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 3.18, y: 5}
+  m_EdgeRadius: 0
 --- !u!1001 &1245090712574861776
 PrefabInstance:
   m_ObjectHideFlags: 0

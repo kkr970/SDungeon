@@ -10,6 +10,8 @@ public interface ICharacter
 
     //이름 반환
     string getName();
+    //정보 반환
+    string getInfo();
 
     //공격함
     void Attack(CharacterManager target);
@@ -17,6 +19,8 @@ public interface ICharacter
     void onDamage(int damage);
     //mp사용
     void useMp(int mp);
+    //스킵
+    void skip();
 
 
     //hp, mp바 업데이트

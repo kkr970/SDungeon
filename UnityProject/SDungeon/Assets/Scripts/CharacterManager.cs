@@ -142,7 +142,15 @@ public class CharacterManager : MonoBehaviour, ICharacter
         if(curMp < 0) curMp = 0;
         updateMpBar();
     }
-
+    //스킵, mp회복
+    public virtual void skip()
+    {
+        this.curMp += 1 + (maxMp/5);
+        if(this.curMp > this.maxMp)
+        {
+            this.curMp = this.maxMp;
+        }
+    }
     //mp바, hp바, 턴알림 업데이트
     public void updateHpBar()
     {
@@ -194,5 +202,14 @@ public class CharacterManager : MonoBehaviour, ICharacter
     public string getTag()
     {
         return gameObject.tag;
+    }
+    // 오브젝트 정보 반환
+    public virtual string getInfo()
+    {
+        string str = "Select Info" + System.Environment.NewLine
+                    +"이름 : " + getName() + System.Environment.NewLine
+                    +"HP : " + this.curHp + System.Environment.NewLine
+                    +"MP : " + this.curMp + System.Environment.NewLine;
+        return str;
     }
 }

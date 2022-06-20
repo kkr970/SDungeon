@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
     private bool isProcessing;
     private GAMESTATE gState;
     private int targetIndex = 0;
+    private CharacterManager targetObject;
     private int actionIndex = 0; // 0=공격 1=스킬 2=스킵
 
 
@@ -194,7 +195,7 @@ public class GameManager : MonoBehaviour
                 // 타겟을 선택
                 yield return StartCoroutine(selectTarget());
                 //공격
-                chara.Attack(lenemyCharacters[targetIndex]);
+                chara.Attack(targetObject);
             }
                 //스킬
             else if(actionIndex == 1)
@@ -204,7 +205,7 @@ public class GameManager : MonoBehaviour
                 //스킵, 마나 회복
             else if(actionIndex == 2)
             {
-                
+                chara.skip();
             }
         }
 
@@ -239,7 +240,7 @@ public class GameManager : MonoBehaviour
             mSetTurn();
         }
         
-        Debug.Log("코루틴 종료");
+        //Debug.Log("코루틴 종료");
     }
     // 행동 선택 
     IEnumerator selectAction()
@@ -260,9 +261,14 @@ public class GameManager : MonoBehaviour
                         actionIndex = 0;
                         break;
                     }
+                    if(clickObject.name == "Skip Button")
+                    {
+                        actionIndex = 2;
+                        break;
+                    }
                 }
             }
-            yield return new WaitForSeconds(0.005f);
+            yield return null;
         }
     }
     // 타겟 선택
@@ -270,6 +276,23 @@ public class GameManager : MonoBehaviour
     {
         while(true)
         {
+            if(Input.GetMouseButtonDown(0))
+            {
+                Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
+                GameObject clickObject = null;
+                if(hit.collider != null)
+                {
+                    clickObject = hit.transform.gameObject;
+                    Debug.Log("Click " + clickObject.name + clickObject.tag);
+                    if(clickObject.tag == "Enemy" || clickObject.tag == "Player")
+                    {
+                        targetObject = clickObject.GetComponent<CharacterManager>();
+                        break;
+                    }
+                }
+            }
+            //테스트용 랜덤타겟
             if(Input.GetKeyDown(KeyCode.Space))
             {
                 int targetIndex = 0;
@@ -287,7 +310,7 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             }
-            yield return new WaitForSeconds(0.005f);
+            yield return null;
         }
     }
     

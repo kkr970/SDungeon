@@ -21,12 +21,36 @@ public class UIManager : MonoBehaviour
     public GameObject actionSelectUI;
     public ScrollRect logScroll;
     public Text turnText;
+    public GameObject infoPanel;
+    public Image infoImage;
 
     //GameOver UI
     public GameObject gameOverUI;
 
     //GameWin UI
     public GameObject gameWinUI;
+
+    void Update()
+    {
+        Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
+        if(hit.collider != null)
+        {
+            GameObject clickObject = hit.transform.gameObject;
+            if(clickObject.tag == "Enemy" || clickObject.tag == "Player")
+            {
+                infoPanel.SetActive(true);
+                updateInfoText(clickObject.GetComponent<CharacterManager>().getInfo());
+                updateInfoImage(clickObject.GetComponent<SpriteRenderer>().sprite);
+            }
+        }
+        else
+        {
+            infoPanel.SetActive(false);
+            updateInfoText("");
+            updateInfoImage(null);
+        }
+    }
     
     //Battle UI 메서드
         //턴 업데이트
@@ -51,6 +75,18 @@ public class UIManager : MonoBehaviour
         string text = logScroll.GetComponentInChildren<Text>().text;
         logScroll.GetComponentInChildren<Text>().text = "> " + log + text;
         logScroll.GetComponentInChildren<Scrollbar>().value = 1.0f;
+    }
+        //정보 업데이트
+    public void updateInfoText(string info)
+    {
+        infoPanel.GetComponentInChildren<Text>().text = info;
+    }
+    public void updateInfoImage(Sprite target)
+    {
+        if(target != null)
+        {
+            infoImage.sprite = target;        
+        }
     }
     
 
