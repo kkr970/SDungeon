@@ -9,7 +9,13 @@ enum GAMESTATE
 {
     BATTLE,
     WIN,
-    LOSE
+    LOSE,
+}
+enum TRUNSTATE
+{
+    START,
+    PROCESSING,
+    END
 }
 
 public class GameManager : MonoBehaviour
@@ -46,6 +52,7 @@ public class GameManager : MonoBehaviour
     //각종 변수들
     private bool isProcessing;
     private GAMESTATE gState;
+    private TRUNSTATE tState;
     private int targetIndex = 0;
     private CharacterManager targetObject;
     private int actionIndex = 0; // 0=공격 1=스킬 2=스킵
@@ -55,6 +62,7 @@ public class GameManager : MonoBehaviour
     {
         isProcessing = false;
         gState = GAMESTATE.BATTLE;
+        tState = TRUNSTATE.END;
         playerNum = 2; // 1, 2선택 또는 2 고정
         enemyNum = 3;  // 플레이어:적 / 1:2 / 2:3 / x:3
         roundNum = 0;
@@ -82,6 +90,27 @@ public class GameManager : MonoBehaviour
     {
         if(gState == GAMESTATE.BATTLE)
         {
+            //턴이 종료 -> 턴을 시작으로 변경
+            if(tState == TRUNSTATE.END)
+            {
+                tState = TRUNSTATE.START;
+            }
+            //턴이 시작
+            if(tState == TRUNSTATE.START)
+            {
+                tState = TRUNSTATE.PROCESSING;
+            }
+            //턴을 진행
+            if(tState == TRUNSTATE.PROCESSING)
+            {
+                if(!isProcessing)
+                {
+                    isProcessing = true;
+                    mProgressTurn();
+                }
+            }
+
+            /*
             if(!isProcessing)
             {
                 // 임시 코드 확인용 버튼 A : 세팅 / D : 턴진행
@@ -97,9 +126,10 @@ public class GameManager : MonoBehaviour
                     mProgressTurn();
                 }
             }
+            */
         }
         //패배
-        if(gState == GAMESTATE.LOSE)
+        else if(gState == GAMESTATE.LOSE)
         {
             if(Input.GetKeyDown(KeyCode.R))
             {
@@ -107,7 +137,7 @@ public class GameManager : MonoBehaviour
             }
         }
         //승리
-        if(gState == GAMESTATE.WIN)
+        else if(gState == GAMESTATE.WIN)
         {
             if(Input.GetKeyDown(KeyCode.R))
             {
@@ -179,6 +209,7 @@ public class GameManager : MonoBehaviour
                     targetIndex = i;
                 }
             }
+            yield return new WaitForSeconds(0.8f);
             chara.Attack(lplayerCharacters[targetIndex]);
         }
         // 플레이어일 경우
@@ -192,10 +223,12 @@ public class GameManager : MonoBehaviour
                 //공격
             if(actionIndex == 0)
             {
+                UIManager.instance.actionTextUI_ON();
                 // 타겟을 선택
                 yield return StartCoroutine(selectTarget());
                 //공격
                 chara.Attack(targetObject);
+                UIManager.instance.actionTextUI_OFF();
             }
                 //스킬
             else if(actionIndex == 1)
@@ -221,6 +254,7 @@ public class GameManager : MonoBehaviour
         // 턴 마침
         chara.State = STATE.END;
         isProcessing = false;
+        UIManager.instance.updateLogText(System.Environment.NewLine);
         // 턴 알림
         lcharacters[index].offNowTurn();
         nextTurn(index);

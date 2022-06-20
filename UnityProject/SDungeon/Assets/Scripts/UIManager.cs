@@ -19,6 +19,7 @@ public class UIManager : MonoBehaviour
     //Battle UI
     public GameObject battleUI;
     public GameObject actionSelectUI;
+    public GameObject actionTextUI;
     public ScrollRect logScroll;
     public Text turnText;
     public GameObject infoPanel;
@@ -32,23 +33,26 @@ public class UIManager : MonoBehaviour
 
     void Update()
     {
-        Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
-        if(hit.collider != null)
+        if(!Input.GetMouseButton(0))
         {
-            GameObject clickObject = hit.transform.gameObject;
-            if(clickObject.tag == "Enemy" || clickObject.tag == "Player")
+            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
+            if(hit.collider != null)
             {
-                infoPanel.SetActive(true);
-                updateInfoText(clickObject.GetComponent<CharacterManager>().getInfo());
-                updateInfoImage(clickObject.GetComponent<SpriteRenderer>().sprite);
+                GameObject clickObject = hit.transform.gameObject;
+                if(clickObject.tag == "Enemy" || clickObject.tag == "Player")
+                {
+                    infoPanel.SetActive(true);
+                    updateInfoText(clickObject.GetComponent<CharacterManager>().getInfo());
+                    updateInfoImage(clickObject.GetComponent<SpriteRenderer>().sprite);
+                }
             }
-        }
-        else
-        {
-            infoPanel.SetActive(false);
-            updateInfoText("");
-            updateInfoImage(null);
+            else
+            {
+                infoPanel.SetActive(false);
+                updateInfoText("");
+                updateInfoImage(null);
+            }
         }
     }
     
@@ -67,6 +71,15 @@ public class UIManager : MonoBehaviour
     public void actionSelectUI_OFF()
     {
         actionSelectUI.SetActive(false);
+    }
+        //액션 text UI on/off
+    public void actionTextUI_ON()
+    {
+        actionTextUI.SetActive(true);
+    }
+    public void actionTextUI_OFF()
+    {
+        actionTextUI.SetActive(false);
     }
 
         //로그 업데이트

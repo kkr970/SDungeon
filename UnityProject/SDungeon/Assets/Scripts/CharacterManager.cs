@@ -140,6 +140,8 @@ public class CharacterManager : MonoBehaviour, ICharacter
     {
         curMp -= mp;
         if(curMp < 0) curMp = 0;
+        UIManager.instance.updateLogText(this.getObjectName() + 
+                            " Use " + mp +"MP" + System.Environment.NewLine);
         updateMpBar();
     }
     //스킵, mp회복
@@ -150,7 +152,11 @@ public class CharacterManager : MonoBehaviour, ICharacter
         {
             this.curMp = this.maxMp;
         }
+        UIManager.instance.updateLogText(this.getObjectName() + 
+                            " Recovered " + (1+(maxMp/5)) +"MP" + System.Environment.NewLine);
+        updateMpBar();
     }
+    
     //mp바, hp바, 턴알림 업데이트
     public void updateHpBar()
     {
@@ -208,8 +214,8 @@ public class CharacterManager : MonoBehaviour, ICharacter
     {
         string str = "Select Info" + System.Environment.NewLine
                     +"이름 : " + getName() + System.Environment.NewLine
-                    +"HP : " + this.curHp + System.Environment.NewLine
-                    +"MP : " + this.curMp + System.Environment.NewLine;
+                    +"HP : " + this.curHp + "/" + this.maxHp + System.Environment.NewLine
+                    +"MP : " + this.curMp + "/" + this.maxMp + System.Environment.NewLine;
         return str;
     }
 }
