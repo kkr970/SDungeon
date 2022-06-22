@@ -87,11 +87,8 @@ public class ArchMage : CharacterManager
                     //UIManager.instance.updateLogText(skillName + " : Hit!" + System.Environment.NewLine);
                 }
             }
-            if(totalDamage > 0)
-            {
-                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + target.getObjectName()
-                                        + " : " + totalDamage + "Multiple Damage!" + System.Environment.NewLine);
-            } 
+            UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + target.getObjectName()
+                                    + " : " + totalDamage + "Multiple Damage!" + System.Environment.NewLine);
         }
         return true;
     }
