@@ -20,7 +20,7 @@ public class Knight : CharacterManager
         maxHp = power + 3;
         curHp = maxHp;
 
-        maxMp = magic+ 2;
+        maxMp = magic;
         curMp = maxMp;
     }
 
@@ -36,15 +36,77 @@ public class Knight : CharacterManager
     }
 
     // 공격
-    public override void Attack(CharacterManager target)
+    public override void attack(CharacterManager target)
     {
-        base.Attack(target);
+        base.attack(target);
+    }
+    // 스킬
+    // 1. 강타/mp 1소모 : power계수 (-1)0/(0)12/(+1)345의 데미지
+    public override bool skill(CharacterManager target, int num)
+    {
+        string skillName = "";
+        // 강타
+        if(num == 1)
+        {
+            if(curMp < 1) return false;
+            useMp(1);
+
+            skillName = "Strike";
+            int damage = 0;
+            for(int i = 0 ; i < power ; i++)
+            {
+                int _num = Random.Range(0, 6);
+                switch(_num)
+                {
+                    case 0:
+                        damage--;
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        damage++;
+                        break;
+                    case 4:
+                        damage++;
+                        break;
+                    case 5:
+                        damage++;
+                        break;
+                    default:
+                        Debug.LogWarning("Error, Attack()");
+                        break;
+                }
+            }
+            
+            // 데미지 적용
+            if(damage > 0)
+            {
+                target.onDamage(damage);
+                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + target.getObjectName()
+                                        + " : " + damage + "Damage!" + System.Environment.NewLine);
+            }
+            else
+            {
+                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + target.getObjectName()
+                                        + " : " + "Miss!" + System.Environment.NewLine);
+            }
+        }
+        return true;
+    }
+    public override string skill_1_Info()
+    {
+        return "강타" + System.Environment.NewLine
+             + "사용 MP : 1" + System.Environment.NewLine
+             + "힘 계수 데미지 D6( 1 / 23 / 456 )" + System.Environment.NewLine;
     }
 
+
     // 사망처리
-    public override void Dead()
+    public override void dead()
     {
-        base.Dead();
+        base.dead();
     }
 
     // 이름가져오기

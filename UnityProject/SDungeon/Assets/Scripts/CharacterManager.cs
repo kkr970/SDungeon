@@ -60,7 +60,7 @@ public class CharacterManager : MonoBehaviour, ICharacter
     }
 
     //공격함
-    public virtual void Attack(CharacterManager target)
+    public virtual void attack(CharacterManager target)
     {
         Debug.Log("Attack!" + this.getName() + " -> " + target.getName());
         int damage = 0;
@@ -99,51 +99,26 @@ public class CharacterManager : MonoBehaviour, ICharacter
             UIManager.instance.updateLogText(this.getObjectName() + " Attack -> " + target.getObjectName()
                                 + " : " + damage + "Damage!" + System.Environment.NewLine);
             target.onDamage(damage);
-            // 타겟의 현재 hp를 확인
-            if(target.curHp <= 0)
-            {
-                target.Dead();
-            }
         }
         else
         {
             Debug.Log("Miss!");
             UIManager.instance.updateLogText(this.getObjectName() + " Attack -> " + target.getObjectName()
                                 + " : " + "Miss!" + System.Environment.NewLine);
-
         }
     }
-    //공격받음
-    public virtual void onDamage(int damage)
+    //스킬 사용
+    public virtual bool skill(CharacterManager target, int num)
     {
-        curHp -= damage;
-        if(curHp < 0) curHp = 0;
-        StartCoroutine(hitMotion());
-        updateHpBar();
+        Debug.Log(this.getObjectName() + " : SKILL!" + System.Environment.NewLine);
+        return true;
     }
-    //공격받는 모션
-    private IEnumerator hitMotion()
+    public virtual string skill_1_Info()
     {
-        Color oriColor = this.GetComponent<SpriteRenderer>().color;
-        Color newColor = oriColor;
-        newColor.g = 0.5f;
-        newColor.b = 0.5f;
-        this.GetComponent<SpriteRenderer>().color = newColor;
-
-        yield return new WaitForSeconds(0.29f);
-
-        this.GetComponent<SpriteRenderer>().color = oriColor;
+        return "";
     }
 
-    //mp사용
-    public virtual void useMp(int mp)
-    {
-        curMp -= mp;
-        if(curMp < 0) curMp = 0;
-        UIManager.instance.updateLogText(this.getObjectName() + 
-                            " Use " + mp +"MP" + System.Environment.NewLine);
-        updateMpBar();
-    }
+
     //스킵, mp회복
     public virtual void skip()
     {
@@ -156,7 +131,39 @@ public class CharacterManager : MonoBehaviour, ICharacter
                             " Recovered " + (1+(maxMp/5)) +"MP" + System.Environment.NewLine);
         updateMpBar();
     }
-    
+
+
+
+    //공격받음
+    public virtual void onDamage(int damage)
+    {
+        curHp -= damage;
+        StopCoroutine(hitMotion());
+        StartCoroutine(hitMotion());
+        if(curHp <= 0)
+        {
+            curHp = 0;
+            this.dead();
+        }
+        updateHpBar();
+    }
+    //공격받는 모션
+    private IEnumerator hitMotion()
+    {
+        this.GetComponent<SpriteRenderer>().color = new Vector4(1.0f, 0.5f, 0.5f, 1.0f);
+        yield return new WaitForSeconds(0.29f);
+        this.GetComponent<SpriteRenderer>().color = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+    //mp사용
+    public virtual void useMp(int mp)
+    {
+        curMp -= mp;
+        if(curMp < 0) curMp = 0;
+        UIManager.instance.updateLogText(this.getObjectName() + 
+                            " Use " + mp +"MP" + System.Environment.NewLine);
+        updateMpBar();
+    }
+
     //mp바, hp바, 턴알림 업데이트
     public void updateHpBar()
     {
@@ -186,7 +193,7 @@ public class CharacterManager : MonoBehaviour, ICharacter
     }
 
     //사망처리
-    public virtual void Dead()
+    public virtual void dead()
     {
         State = STATE.DEAD;
         UIManager.instance.updateLogText(this.getObjectName() + " Dead!" + System.Environment.NewLine);
@@ -212,10 +219,17 @@ public class CharacterManager : MonoBehaviour, ICharacter
     // 오브젝트 정보 반환
     public virtual string getInfo()
     {
-        string str = "Select Info" + System.Environment.NewLine
-                    +"이름 : " + getName() + System.Environment.NewLine
-                    +"HP : " + this.curHp + "/" + this.maxHp + System.Environment.NewLine
-                    +"MP : " + this.curMp + "/" + this.maxMp + System.Environment.NewLine;
-        return str;
+        return "Select Info" + System.Environment.NewLine
+             + "이름 : " + getName() + System.Environment.NewLine
+             + "HP : " + this.curHp + "/" + this.maxHp + System.Environment.NewLine
+             + "MP : " + this.curMp + "/" + this.maxMp + System.Environment.NewLine;;
+    }
+    public virtual string getStatInfo()
+    {
+        return "Select Status Info" + System.Environment.NewLine
+             + "Power : " + this.power + System.Environment.NewLine
+             + "Magic : " + this.magic + System.Environment.NewLine
+             + "Speed : " + this.speed + System.Environment.NewLine
+             + "Hide  : " + this.hide + System.Environment.NewLine;
     }
 }

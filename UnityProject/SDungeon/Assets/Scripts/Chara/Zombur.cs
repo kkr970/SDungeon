@@ -35,12 +35,12 @@ public class Zombur : CharacterManager
         return turn;
     }
 
-    public override void Attack(CharacterManager target)
+    public override void attack(CharacterManager target)
     {
-        base.Attack(target);
+        base.attack(target);
     }
 
-    public override void Dead()
+    public override void dead()
     {
         //좀버의 특성 발동
         if(curMp > 0)
@@ -50,7 +50,7 @@ public class Zombur : CharacterManager
             updateHpBar();
             return;
         }
-        base.Dead();
+        base.dead();
     }
     // 이름가져오기
     public override string getName()

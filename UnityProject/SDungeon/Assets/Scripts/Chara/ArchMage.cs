@@ -20,7 +20,7 @@ public class ArchMage : CharacterManager
         maxHp = power + 2;
         curHp = maxHp;
 
-        maxMp = magic+ 2;
+        maxMp = magic + 2;
         curMp = maxMp;
     }
 
@@ -35,10 +35,75 @@ public class ArchMage : CharacterManager
         return turn;
     }
 
-    public override void Attack(CharacterManager target)
+    // 기본공격
+    public override void attack(CharacterManager target)
     {
-        base.Attack(target);
+        base.attack(target);
     }
+    // 스킬
+    // 1. 얼음가시/mp 1소모 : magic계수, magic만큼 반복, 1번당 (0)123/(1)456의 데미지
+    public override bool skill(CharacterManager target, int num)
+    {
+        string skillName = "";
+        // 얼음가시
+        if(num == 1)
+        {
+            if(curMp < 1) return false;
+            useMp(1);
+
+            skillName = "Ice Needle";
+            int totalDamage = 0;
+            for(int i = 0 ; i < magic ; i++)
+            {
+                int damage = 0;
+                int _num = Random.Range(0, 6);
+                switch(_num)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        damage++;
+                        break;
+                    case 4:
+                        damage++;
+                        break;
+                    case 5:
+                        damage++;
+                        break;
+                    default:
+                        Debug.LogWarning("Error, Attack()");
+                        break;
+                }
+                // 데미지 적용
+                if(damage > 0)
+                {
+                    totalDamage += damage;
+                    if(target.State == STATE.DEAD) continue;
+                    target.onDamage(damage);
+                    //UIManager.instance.updateLogText(skillName + " : Hit!" + System.Environment.NewLine);
+                }
+            }
+            if(totalDamage > 0)
+            {
+                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + target.getObjectName()
+                                        + " : " + totalDamage + "Multiple Damage!" + System.Environment.NewLine);
+            } 
+        }
+        return true;
+    }
+    public override string skill_1_Info()
+    {
+        return "얼음가시" + System.Environment.NewLine
+             + "사용 MP : 1" + System.Environment.NewLine
+             + "마법 계수 다단히트 데미지 D6( / 123 / 456 )" + System.Environment.NewLine;
+    }
+
+
+    // 데미지 받음
     public override void onDamage(int damage)
     {
         int mpDamage = damage/2;
@@ -51,11 +116,13 @@ public class ArchMage : CharacterManager
         base.onDamage(damage);
         useMp(mpDamage);
     }
-
-    public override void Dead()
+    // 사망
+    public override void dead()
     {
-        base.Dead();
+        base.dead();
     }
+
+
     // 이름가져오기
     public override string getName()
     {

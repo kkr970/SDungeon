@@ -56,6 +56,8 @@ public class GameManager : MonoBehaviour
     private int targetIndex = 0;
     private CharacterManager targetObject;
     private int actionIndex = 0; // 0=공격 1=스킬 2=스킵
+    private int skillIndex = 0;
+    private bool resetAction = false;
 
 
     void Awake()
@@ -182,7 +184,7 @@ public class GameManager : MonoBehaviour
                 lcharacters[i].onNowTurn();
                 // 캐릭터의 행동
                 StartCoroutine(processTurn(lcharacters[i], i));
-                Debug.Log("코루틴 이후 함수 실행");
+                //Debug.Log("코루틴 이후 함수 실행");
 
                 break;
             }
@@ -191,7 +193,9 @@ public class GameManager : MonoBehaviour
     //턴 진행 코루틴
     IEnumerator processTurn(CharacterManager chara, int index)
     {
+        resetAction = false;
         //Debug.Log(chara.getName() + " : Process turn!");
+        UIManager.instance.processingChara = chara.gameObject;
 
         // 몬스터일 경우
         if(chara.tag == "Enemy")
@@ -210,7 +214,7 @@ public class GameManager : MonoBehaviour
                 }
             }
             yield return new WaitForSeconds(0.8f);
-            chara.Attack(lplayerCharacters[targetIndex]);
+            chara.attack(lplayerCharacters[targetIndex]);
         }
         // 플레이어일 경우
         else if(chara.tag == "Player")
@@ -220,22 +224,60 @@ public class GameManager : MonoBehaviour
             yield return selectAction();
             UIManager.instance.actionSelectUI_OFF();
             
-                //공격
+            // 공격
             if(actionIndex == 0)
             {
                 UIManager.instance.actionTextUI_ON();
                 // 타겟을 선택
                 yield return StartCoroutine(selectTarget());
+                if(resetAction)
+                {
+                    UIManager.instance.actionTextUI_OFF();
+                    StartCoroutine(processTurn(chara, index));
+                    yield break;
+                }
                 //공격
-                chara.Attack(targetObject);
+                chara.attack(targetObject);
                 UIManager.instance.actionTextUI_OFF();
             }
-                //스킬
+            // 스킬
             else if(actionIndex == 1)
             {
+                bool flag = true;
 
+                // 스킬 선택
+                UIManager.instance.skillSelectUI_ON();
+                yield return StartCoroutine(selectSkill());
+                if(resetAction)
+                {
+                    UIManager.instance.skillSelectUI_OFF();
+                    StartCoroutine(processTurn(chara, index));
+                    yield break;
+                }
+                UIManager.instance.skillSelectUI_OFF();
+
+                // 타겟을 선택
+                UIManager.instance.actionTextUI_ON();
+                yield return StartCoroutine(selectTarget());
+                if(resetAction)
+                {
+                    UIManager.instance.actionTextUI_OFF();
+                    StartCoroutine(processTurn(chara, index));
+                    yield break;
+                }
+                UIManager.instance.actionTextUI_OFF();
+
+                // 스킬을 사용
+                flag = chara.skill(targetObject, skillIndex);
+                // mp 부족
+                if(!flag)
+                {
+                    UIManager.instance.updateLogText("MP부족!" + System.Environment.NewLine);
+                    StartCoroutine(processTurn(chara, index));
+                    yield break;
+                }
             }
-                //스킵, 마나 회복
+            // 스킵, 마나 회복
             else if(actionIndex == 2)
             {
                 chara.skip();
@@ -295,6 +337,11 @@ public class GameManager : MonoBehaviour
                         actionIndex = 0;
                         break;
                     }
+                    if(clickObject.name == "Skill Button")
+                    {
+                        actionIndex = 1;
+                        break;
+                    }
                     if(clickObject.name == "Skip Button")
                     {
                         actionIndex = 2;
@@ -324,6 +371,11 @@ public class GameManager : MonoBehaviour
                         targetObject = clickObject.GetComponent<CharacterManager>();
                         break;
                     }
+                    else if(clickObject.name == "Back")
+                    {
+                        resetAction = true;
+                        break;
+                    }
                 }
             }
             //테스트용 랜덤타겟
@@ -331,18 +383,47 @@ public class GameManager : MonoBehaviour
             {
                 int targetIndex = 0;
                 float minHide = 100.0f;
-                for(int i = 0 ; i < lenemyCharacters.Count ; i++)
+                for(int i = 0 ; i < lcharacters.Count ; i++)
                 {
-                    if(lenemyCharacters[i].State == STATE.DEAD) continue;
+                    if(lcharacters[i].State == STATE.DEAD) continue;
                     float rNum = Random.Range(0.0f, 2.0f);
-                    rNum += lenemyCharacters[i].hide;
+                    rNum += lcharacters[i].hide;
                     if(rNum < minHide)
                     {
                         rNum = minHide;
                         targetIndex = i;
                     }
                 }
+                targetObject = lcharacters[targetIndex];
                 break;
+            }
+            yield return null;
+        }
+    }
+    IEnumerator selectSkill()
+    {
+        while(true)
+        {
+            if(Input.GetMouseButtonDown(0))
+            {
+                Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
+                GameObject clickObject = null;
+                if(hit.collider != null)
+                {
+                    clickObject = hit.transform.gameObject;
+                    Debug.Log("Click " + clickObject.name + clickObject.tag);
+                    if(clickObject.name == "Skill1")
+                    {
+                        skillIndex = 1;
+                        break;
+                    }
+                    else if(clickObject.name == "Back")
+                    {
+                        resetAction = true;
+                        break;
+                    }                    
+                }
             }
             yield return null;
         }
