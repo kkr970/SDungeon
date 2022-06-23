@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 // 아크메이지
 // 특성 : 공격받을 때, 50%(내림)만큼 mp가 대신 줄어듬
@@ -30,16 +28,7 @@ public class ArchMage : CharacterManager
         base.setTurn();
         turn = turnSpeed + speed;
     }
-    public override float getTurn()
-    {
-        return turn;
-    }
 
-    // 기본공격
-    public override void attack(CharacterManager target)
-    {
-        base.attack(target);
-    }
     // 스킬
     // 1. 얼음가시/mp 1소모 : magic계수, magic만큼 반복, 1번당 (0)123/(1)456의 데미지
     public override bool skill(CharacterManager target, int num)
@@ -84,19 +73,19 @@ public class ArchMage : CharacterManager
                     totalDamage += damage;
                     if(target.State == STATE.DEAD) continue;
                     target.onDamage(damage);
-                    //UIManager.instance.updateLogText(skillName + " : Hit!" + System.Environment.NewLine);
+                    //UIManager.instance.updateLogText(skillName + " : Hit!");
                 }
             }
             UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + target.getObjectName()
-                                    + " : " + totalDamage + "Multiple Damage!" + System.Environment.NewLine);
+                                    + " : " + totalDamage + "Multiple Damage!");
         }
         return true;
     }
     public override string skill_1_Info()
     {
-        return "얼음가시" + System.Environment.NewLine
-             + "사용 MP : 1" + System.Environment.NewLine
-             + "마법 계수 다단히트 데미지 D6( / 123 / 456 )" + System.Environment.NewLine;
+        return "얼음가시"
+             + "사용 MP : 1"
+             + "마법 계수 다단히트 데미지 D6( / 123 / 456 )";
     }
 
 

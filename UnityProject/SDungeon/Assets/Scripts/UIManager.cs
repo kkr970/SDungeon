@@ -129,8 +129,18 @@ public class UIManager : MonoBehaviour
     public void updateLogText(string log)
     {
         string text = logScroll.GetComponentInChildren<Text>().text;
-        logScroll.GetComponentInChildren<Text>().text = "> " + log + text;
-        logScroll.GetComponentInChildren<Scrollbar>().value = 1.0f;
+        if(text != "")
+        {
+            logScroll.GetComponentInChildren<Text>().text = text + System.Environment.NewLine + "> " + log;
+        }
+        else
+        {
+            logScroll.GetComponentInChildren<Text>().text = "> " + log;
+        }
+        if(logScroll.GetComponentInChildren<Scrollbar>() != null)
+            logScroll.GetComponentInChildren<Scrollbar>().value = 0.0f;
+        
+        
     }
         //정보 업데이트
     public void updateInfoText(string info)

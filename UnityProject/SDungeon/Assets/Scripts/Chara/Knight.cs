@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 // 기사
@@ -30,16 +28,7 @@ public class Knight : CharacterManager
         base.setTurn();
         turn = turnSpeed + speed;
     }
-    public override float getTurn()
-    {
-        return turn;
-    }
 
-    // 공격
-    public override void attack(CharacterManager target)
-    {
-        base.attack(target);
-    }
     // 스킬
     // 1. 강타/mp 1소모 : power계수 (-1)0/(0)12/(+1)345의 데미지
     public override bool skill(CharacterManager target, int num)
@@ -85,29 +74,24 @@ public class Knight : CharacterManager
             {
                 target.onDamage(damage);
                 UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + target.getObjectName()
-                                        + " : " + damage + "Damage!" + System.Environment.NewLine);
+                                        + " : " + damage + "Damage!");
             }
             else
             {
                 UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + target.getObjectName()
-                                        + " : " + "Miss!" + System.Environment.NewLine);
+                                        + " : " + "Miss!");
             }
         }
         return true;
     }
     public override string skill_1_Info()
     {
-        return "강타" + System.Environment.NewLine
-             + "사용 MP : 1" + System.Environment.NewLine
-             + "힘 계수 데미지 D6( 1 / 23 / 456 )" + System.Environment.NewLine;
+        return "강타"
+             + "사용 MP : 1"
+             + "힘 계수 데미지 D6( 1 / 23 / 456 )";
     }
 
 
-    // 사망처리
-    public override void dead()
-    {
-        base.dead();
-    }
 
     // 이름가져오기
     public override string getName()

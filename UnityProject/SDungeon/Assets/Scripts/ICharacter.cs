@@ -1,9 +1,8 @@
-﻿using UnityEngine;
-
+﻿
 //몬스터, 플레이어의 캐릭터 인터페이스
 public interface ICharacter
 {
-    //턴
+    //턴 숫자가 클수록 빠르게 행동
     void setTurn();
     float getTurn();
 
@@ -22,9 +21,16 @@ public interface ICharacter
     void onDamage(int damage);
     //mp사용
     void useMp(int mp);
+    //mp회복
+    void recoverMP(int mp);
+    //hp회복
+    void recoverHP(int hp);
     //hp, mp바 업데이트
     void updateHpBar();
     void updateMpBar();
+
+    //상태이상 처리
+    void checkEffect();
     
 
     //사망처리
@@ -35,4 +41,8 @@ public interface ICharacter
     string getInfo();
     //스텟 정보 반환
     string getStatInfo();
+
+    //Enemy전용
+    //AI, 행동 선택 (Attack, Skill1, Skill2 ... )
+    string enemyActionAI();
 }

@@ -9,14 +9,21 @@ public enum STATE
     ACTION, //턴을 받아 행동을 취함
     END, // 턴이 끝남
     DEAD, // 죽음
+}
+
+public enum EFFECT
+{
+    //기본, 상태이상 없음
+    NONE,
 
     // 특수 상태이상
-
+    STUN
 }
 
 public class CharacterManager : MonoBehaviour, ICharacter
 {
     private STATE state = STATE.END;
+    private EFFECT effect = EFFECT.NONE;
     public float turnSpeed { get; private set; }
 
     // 스텟, 능력치
@@ -47,6 +54,18 @@ public class CharacterManager : MonoBehaviour, ICharacter
         set
         {
             state = value;
+        }
+    }
+    // effect 관련
+    public EFFECT Effect
+    {
+        get
+        {
+            return effect;
+        }
+        set
+        {
+            effect = value;
         }
     }
     // 턴 관련
@@ -97,20 +116,20 @@ public class CharacterManager : MonoBehaviour, ICharacter
         {
             Debug.Log(this.getObjectName() + " : Attack " + target.getObjectName() + " " + damage + "Damage!");
             UIManager.instance.updateLogText(this.getObjectName() + " Attack -> " + target.getObjectName()
-                                + " : " + damage + "Damage!" + System.Environment.NewLine);
+                                + " : " + damage + "Damage!");
             target.onDamage(damage);
         }
         else
         {
             Debug.Log("Miss!");
             UIManager.instance.updateLogText(this.getObjectName() + " Attack -> " + target.getObjectName()
-                                + " : " + "Miss!" + System.Environment.NewLine);
+                                + " : " + "Miss!");
         }
     }
     //스킬 사용
     public virtual bool skill(CharacterManager target, int num)
     {
-        Debug.Log(this.getObjectName() + " : SKILL!" + System.Environment.NewLine);
+        Debug.Log(this.getObjectName() + " : SKILL!");
         return true;
     }
     public virtual string skill_1_Info()
@@ -122,16 +141,10 @@ public class CharacterManager : MonoBehaviour, ICharacter
     //스킵, mp회복
     public virtual void skip()
     {
-        this.curMp += 1 + (maxMp/5);
-        if(this.curMp > this.maxMp)
-        {
-            this.curMp = this.maxMp;
-        }
+        recoverMP(1 + (maxMp)/5);
         UIManager.instance.updateLogText(this.getObjectName() + 
-                            " Recovered " + (1+(maxMp/5)) +"MP" + System.Environment.NewLine);
-        updateMpBar();
+                            " Skip");
     }
-
 
 
     //공격받음
@@ -160,9 +173,46 @@ public class CharacterManager : MonoBehaviour, ICharacter
         curMp -= mp;
         if(curMp < 0) curMp = 0;
         UIManager.instance.updateLogText(this.getObjectName() + 
-                            " Use " + mp +"MP" + System.Environment.NewLine);
+                            " Use " + mp +"MP");
         updateMpBar();
     }
+    //mp회복
+    public virtual void recoverMP(int mp)
+    {
+        if(curMp + mp > maxMp)
+        {
+            mp = maxMp - curMp;
+        }
+        curMp += mp;
+        UIManager.instance.updateLogText(this.getObjectName() + 
+                            " Recovered " + mp +"MP");
+        updateMpBar();
+    }
+    //hp회복
+    public virtual void recoverHP(int hp)
+    {
+        if(curHp + hp > maxHp)
+        {
+            hp = maxHp - curHp;
+        }
+        curHp += hp;
+        UIManager.instance.updateLogText(this.getObjectName() + 
+                            " Recovered " + hp +"HP" );
+        updateHpBar();
+    }
+    //상태이상 처리
+    public virtual void checkEffect()
+    {
+        //스턴 상태 - 턴 스킵
+        if(this.Effect == EFFECT.STUN)
+        {
+            this.State = STATE.END;
+            this.Effect = EFFECT.NONE;
+            UIManager.instance.updateLogText(this.getObjectName() + " is Stun. (SKIP TURN)" );
+            return;
+        }
+    }
+
 
     //mp바, hp바, 턴알림 업데이트
     public void updateHpBar()
@@ -196,7 +246,7 @@ public class CharacterManager : MonoBehaviour, ICharacter
     public virtual void dead()
     {
         State = STATE.DEAD;
-        UIManager.instance.updateLogText(this.getObjectName() + " Dead!" + System.Environment.NewLine);
+        UIManager.instance.updateLogText(this.getObjectName() + " Dead!" );
         this.gameObject.SetActive(false);
     }
     
@@ -220,9 +270,9 @@ public class CharacterManager : MonoBehaviour, ICharacter
     public virtual string getInfo()
     {
         return "Select Info" + System.Environment.NewLine
-             + "이름 : " + getName() + System.Environment.NewLine
+             + "이름 : " + getName() + "(" + Effect + ")" + System.Environment.NewLine
              + "HP : " + this.curHp + "/" + this.maxHp + System.Environment.NewLine
-             + "MP : " + this.curMp + "/" + this.maxMp + System.Environment.NewLine;;
+             + "MP : " + this.curMp + "/" + this.maxMp + System.Environment.NewLine;
     }
     public virtual string getStatInfo()
     {
@@ -230,6 +280,14 @@ public class CharacterManager : MonoBehaviour, ICharacter
              + "Power : " + this.power + System.Environment.NewLine
              + "Magic : " + this.magic + System.Environment.NewLine
              + "Speed : " + this.speed + System.Environment.NewLine
-             + "Hide  : " + this.hide + System.Environment.NewLine;
+             + "Hide  : " + this.hide;
     }
+
+    // Enemy전용 AI
+    public virtual string enemyActionAI()
+    {
+        Debug.Log(this.getObjectName() + " : 행동 생각중");
+        return null;
+    }
+
 }

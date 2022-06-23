@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 // 스켈레톱
 // 평범한 몬스터이며, 공격력이 꽤나 높음
@@ -30,20 +28,82 @@ public class Skeletop : CharacterManager
         base.setTurn();
         turn = turnSpeed + speed;
     }
-    public override float getTurn()
+
+    public override bool skill(CharacterManager target, int num)
     {
-        return turn;
+        string skillName = "";
+        // 행운의 공격
+        if(num == 1)
+        {
+            if(curMp < 1) return false;
+            useMp(1);
+
+            skillName = "Lucky Strike";
+            bool success = false;
+            for(int i = 0 ; i < lucky ; i++)
+            {
+                int _num = Random.Range(0, 6);
+                switch(_num)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        success = true;
+                        break;
+                    default:
+                        Debug.LogWarning("Error, Skill()");
+                        break;
+                }
+            }
+            
+            // 데미지 적용
+            if(success)
+            {
+                target.onDamage(1);
+                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + target.getObjectName()
+                                        + " : " + 1 + "Damage & Stun!");
+                target.Effect = EFFECT.STUN;
+            }
+            else
+            {
+                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + target.getObjectName()
+                                        + " : " + "Miss!");
+            }
+        }
+        return true;
+    }
+    
+    //행동 선택AI
+    public override string enemyActionAI()
+    {
+        string action = "Attack";
+        if(curMp >= 1)
+        {
+            //50%의 확률로 스킬1 발동
+            int num = Random.Range(0, 2);
+            switch(num)
+            {
+                case 0:
+                    break;
+                case 1:
+                    action = "Skill1";
+                    break;
+            }
+        }
+
+        return action;
     }
 
-    public override void attack(CharacterManager target)
-    {
-        base.attack(target);
-    }
 
-    public override void dead()
-    {
-        base.dead();
-    }
+
     // 이름가져오기
     public override string getName()
     {
@@ -53,7 +113,7 @@ public class Skeletop : CharacterManager
     public override string getInfo()
     {
         string str = base.getInfo();
-        str = str + "공격이 왜 이렇게 아프지?";
+        str = str + "공격이 꽤 아프다!";
         return str;
     }
 }

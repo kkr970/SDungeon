@@ -50,14 +50,18 @@ public class GameManager : MonoBehaviour
     private int roundNum;
 
     //각종 변수들
-    private bool isProcessing;
     private GAMESTATE gState;
     private TRUNSTATE tState;
+    private bool isProcessing;
+
     private int targetIndex = 0;
     private CharacterManager targetObject;
+
     private int actionIndex = 0; // 0=공격 1=스킬 2=스킵
     private int skillIndex = 0;
     private bool resetAction = false;
+
+    string enemyAction = "WAIT";
 
 
     void Awake()
@@ -111,24 +115,6 @@ public class GameManager : MonoBehaviour
                     mProgressTurn();
                 }
             }
-
-            /*
-            if(!isProcessing)
-            {
-                // 임시 코드 확인용 버튼 A : 세팅 / D : 턴진행
-                // 턴 정하기
-                if(Input.GetKeyDown(KeyCode.A))
-                {
-                    mSetTurn();
-                }
-                // 턴 진행하기
-                if(Input.GetKeyDown(KeyCode.D))
-                {
-                    isProcessing = true;
-                    mProgressTurn();
-                }
-            }
-            */
         }
         //패배
         else if(gState == GAMESTATE.LOSE)
@@ -161,10 +147,11 @@ public class GameManager : MonoBehaviour
         for(int i = 0 ; i < lcharacters.Count ; i++)
         {
             lcharacters[i].setTurn();
-            Color newColor = lcharacters[i].GetComponent<SpriteRenderer>().color;
-            newColor.a = 1.0f;
-            lcharacters[i].GetComponent<SpriteRenderer>().color = newColor;
-            lcharacters[i].State = STATE.WAIT;
+            lcharacters[i].GetComponent<SpriteRenderer>().color = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+            if(lcharacters[i].State == STATE.END)
+            {
+                lcharacters[i].State = STATE.WAIT;
+            }
         }
         //큰 순서대로 정렬
         lcharacters.Sort((a, b) => a.getTurn().CompareTo(b.getTurn())*(-1) );
@@ -182,6 +169,7 @@ public class GameManager : MonoBehaviour
             {
                 //Debug.Log("Progress Chara : " + lcharacters[i].getName());
                 lcharacters[i].onNowTurn();
+                lcharacters[i].State = STATE.ACTION;
                 // 캐릭터의 행동
                 StartCoroutine(processTurn(lcharacters[i], i));
                 //Debug.Log("코루틴 이후 함수 실행");
@@ -197,97 +185,126 @@ public class GameManager : MonoBehaviour
         //Debug.Log(chara.getName() + " : Process turn!");
         UIManager.instance.processingChara = chara.gameObject;
 
-        // 몬스터일 경우
-        if(chara.tag == "Enemy")
+        //상태이상 처리
+        chara.checkEffect();
+        if(chara.State == STATE.ACTION)
         {
-            // 타겟을 선택
-            float minHide = 100.0f;
-            for(int i = 0 ; i < lplayerCharacters.Count ; i++)
+            // 몬스터일 경우
+            if(chara.tag == "Enemy")
             {
-                if(lplayerCharacters[i].State == STATE.DEAD) continue;
-                float rNum = Random.Range(0.0f, 2.0f);
-                rNum += lplayerCharacters[i].hide;
-                if(rNum < minHide)
-                {
-                    rNum = minHide;
-                    targetIndex = i;
-                }
-            }
-            yield return new WaitForSeconds(0.8f);
-            chara.attack(lplayerCharacters[targetIndex]);
-        }
-        // 플레이어일 경우
-        else if(chara.tag == "Player")
-        {
-            // 행동 선택
-            UIManager.instance.actionSelectUI_ON();
-            yield return selectAction();
-            UIManager.instance.actionSelectUI_OFF();
-            
-            // 공격
-            if(actionIndex == 0)
-            {
-                UIManager.instance.actionTextUI_ON();
-                // 타겟을 선택
-                yield return StartCoroutine(selectTarget());
-                if(resetAction)
-                {
-                    UIManager.instance.actionTextUI_OFF();
-                    StartCoroutine(processTurn(chara, index));
-                    yield break;
-                }
-                //공격
-                chara.attack(targetObject);
-                UIManager.instance.actionTextUI_OFF();
-            }
-            // 스킬
-            else if(actionIndex == 1)
-            {
-                bool flag = true;
+                // 몬스터의 행동 선택 AI
+                yield return enemySelectAction(chara);
 
-                // 스킬 선택
-                UIManager.instance.skillSelectUI_ON();
-                yield return StartCoroutine(selectSkill());
-                if(resetAction)
+                // 기본 공격
+                if(enemyAction == "Attack")
                 {
+                    // 타겟을 선택
+                    float minHide = 100.0f;
+                    for(int i = 0 ; i < lplayerCharacters.Count ; i++)
+                    {
+                        if(lplayerCharacters[i].State == STATE.DEAD) continue;
+                        float rNum = Random.Range(0.0f, 2.0f);
+                        rNum += lplayerCharacters[i].hide;
+                        if(rNum < minHide)
+                        {
+                            rNum = minHide;
+                            targetIndex = i;
+                        }
+                    }
+                    yield return new WaitForSeconds(0.8f);
+                    chara.attack(lplayerCharacters[targetIndex]);
+                }
+                // 스킬
+                else
+                {
+                    skillIndex = enemyAction[5] - '0';
+                    // 타겟을 선택
+                    float minHide = 100.0f;
+                    for(int i = 0 ; i < lplayerCharacters.Count ; i++)
+                    {
+                        if(lplayerCharacters[i].State == STATE.DEAD) continue;
+                        float rNum = Random.Range(0.0f, 2.0f);
+                        rNum += lplayerCharacters[i].hide;
+                        if(rNum < minHide)
+                        {
+                            rNum = minHide;
+                            targetIndex = i;
+                        }
+                    }
+                    yield return new WaitForSeconds(0.8f);
+                    chara.skill(lplayerCharacters[targetIndex], skillIndex);
+                }
+            }
+            // 플레이어일 경우
+            else if(chara.tag == "Player")
+            {
+                // 행동 선택
+                UIManager.instance.actionSelectUI_ON();
+                yield return selectAction();
+                UIManager.instance.actionSelectUI_OFF();
+                
+                // 공격
+                if(actionIndex == 0)
+                {
+                    UIManager.instance.actionTextUI_ON();
+                    // 타겟을 선택
+                    yield return StartCoroutine(selectTarget());
+                    if(resetAction)
+                    {
+                        UIManager.instance.actionTextUI_OFF();
+                        StartCoroutine(processTurn(chara, index));
+                        yield break;
+                    }
+                    //공격
+                    chara.attack(targetObject);
+                    UIManager.instance.actionTextUI_OFF();
+                }
+                // 스킬
+                else if(actionIndex == 1)
+                {
+                    bool flag = true;
+
+                    // 스킬 선택
+                    UIManager.instance.skillSelectUI_ON();
+                    yield return StartCoroutine(selectSkill());
+                    if(resetAction)
+                    {
+                        UIManager.instance.skillSelectUI_OFF();
+                        StartCoroutine(processTurn(chara, index));
+                        yield break;
+                    }
                     UIManager.instance.skillSelectUI_OFF();
-                    StartCoroutine(processTurn(chara, index));
-                    yield break;
-                }
-                UIManager.instance.skillSelectUI_OFF();
 
-                // 타겟을 선택
-                UIManager.instance.actionTextUI_ON();
-                yield return StartCoroutine(selectTarget());
-                if(resetAction)
-                {
+                    // 타겟을 선택
+                    UIManager.instance.actionTextUI_ON();
+                    yield return StartCoroutine(selectTarget());
+                    if(resetAction)
+                    {
+                        UIManager.instance.actionTextUI_OFF();
+                        StartCoroutine(processTurn(chara, index));
+                        yield break;
+                    }
                     UIManager.instance.actionTextUI_OFF();
-                    StartCoroutine(processTurn(chara, index));
-                    yield break;
-                }
-                UIManager.instance.actionTextUI_OFF();
 
-                // 스킬을 사용
-                flag = chara.skill(targetObject, skillIndex);
-                // mp 부족
-                if(!flag)
-                {
-                    UIManager.instance.updateLogText("MP부족!" + System.Environment.NewLine);
-                    StartCoroutine(processTurn(chara, index));
-                    yield break;
+                    // 스킬을 사용
+                    flag = chara.skill(targetObject, skillIndex);
+                    // mp 부족
+                    if(!flag)
+                    {
+                        UIManager.instance.updateLogText("MP부족!");
+                        StartCoroutine(processTurn(chara, index));
+                        yield break;
+                    }
                 }
-            }
-            // 스킵, 마나 회복
-            else if(actionIndex == 2)
-            {
-                chara.skip();
+                // 스킵, 마나 회복
+                else if(actionIndex == 2)
+                {
+                    chara.skip();
+                }
             }
         }
-
         // 투명도를 조절
-        Color newColor = chara.GetComponent<SpriteRenderer>().color;
-        newColor.a = 0.3921f;
-        chara.GetComponent<SpriteRenderer>().color = newColor;
+        chara.GetComponent<SpriteRenderer>().color = new Vector4(1.0f, 1.0f, 1.0f, 0.3921f);
 
         //Debug.Log(chara.getName() + " : End turn!");
         yield return new WaitForSeconds(0.3f);
@@ -296,7 +313,7 @@ public class GameManager : MonoBehaviour
         // 턴 마침
         chara.State = STATE.END;
         isProcessing = false;
-        UIManager.instance.updateLogText(System.Environment.NewLine);
+        UIManager.instance.updateLogText("");
         // 턴 알림
         lcharacters[index].offNowTurn();
         nextTurn(index);
@@ -349,6 +366,19 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
+            yield return null;
+        }
+    }
+    // AI 행동 선택
+    IEnumerator enemySelectAction(CharacterManager enemy)
+    {
+        enemyAction = "WAIT";
+        enemyAction = enemy.enemyActionAI();
+        while(true)
+        {
+            Debug.Log(enemy.getObjectName() + "가 선택한 행동 : " + enemyAction);
+            if(enemyAction != "WAIT")
+                break;
             yield return null;
         }
     }
