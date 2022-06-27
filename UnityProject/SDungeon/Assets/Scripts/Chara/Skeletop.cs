@@ -88,12 +88,14 @@ public class Skeletop : CharacterManager
         if(curMp >= 1)
         {
             //50%의 확률로 스킬1 발동
-            int num = Random.Range(0, 2);
+            int num = Random.Range(0, 3);
             switch(num)
             {
                 case 0:
                     break;
                 case 1:
+                    break;
+                case 2:
                     action = "Skill1";
                     break;
             }
