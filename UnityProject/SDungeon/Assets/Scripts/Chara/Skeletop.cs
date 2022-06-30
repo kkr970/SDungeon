@@ -67,15 +67,14 @@ public class Skeletop : CharacterManager
             // 데미지 적용
             if(success)
             {
+                UIManager.instance.updateLogText(this.getObjectName() + " use " + skillName + "!");
                 target.onDamage(1);
-                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + target.getObjectName()
-                                        + " : " + 1 + "Damage & Stun!");
                 target.Effect = EFFECT.STUN;
+                UIManager.instance.updateLogText(target.getObjectName() + " STUN!");
             }
             else
             {
-                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + target.getObjectName()
-                                        + " : " + "Miss!");
+                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + "... Miss!");
             }
         }
         return true;

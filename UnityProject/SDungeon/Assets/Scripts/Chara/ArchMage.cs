@@ -39,8 +39,8 @@ public class ArchMage : CharacterManager
         {
             if(curMp < 1) return false;
             useMp(1);
-
             skillName = "Ice Needle";
+            UIManager.instance.updateLogText(this.getObjectName() + " use " + skillName + "!");
             int totalDamage = 0;
             for(int i = 0 ; i < magic ; i++)
             {
@@ -76,8 +76,7 @@ public class ArchMage : CharacterManager
                     //UIManager.instance.updateLogText(skillName + " : Hit!");
                 }
             }
-            UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + target.getObjectName()
-                                    + " : " + totalDamage + "Multiple Damage!");
+            UIManager.instance.updateLogText(totalDamage +" Hit!");
         }
         return true;
     }

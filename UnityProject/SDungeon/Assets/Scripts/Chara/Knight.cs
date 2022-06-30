@@ -72,14 +72,12 @@ public class Knight : CharacterManager
             // 데미지 적용
             if(damage > 0)
             {
+                UIManager.instance.updateLogText(this.getObjectName() + " use " + skillName + "!");
                 target.onDamage(damage);
-                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + target.getObjectName()
-                                        + " : " + damage + "Damage!");
             }
             else
             {
-                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + target.getObjectName()
-                                        + " : " + "Miss!");
+                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + "... Miss!");
             }
         }
         return true;

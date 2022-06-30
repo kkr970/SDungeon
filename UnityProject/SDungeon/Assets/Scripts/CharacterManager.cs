@@ -114,22 +114,20 @@ public class CharacterManager : MonoBehaviour, ICharacter
         // 데미지 적용
         if(damage > 0)
         {
-            Debug.Log(this.getObjectName() + " : Attack " + target.getObjectName() + " " + damage + "Damage!");
-            UIManager.instance.updateLogText(this.getObjectName() + " Attack -> " + target.getObjectName()
-                                + " : " + damage + "Damage!");
+            //Debug.Log(this.getObjectName() + " : Attack " + target.getObjectName() + " " + damage + "Damage!");
+            UIManager.instance.updateLogText(this.getObjectName() + " Attack!");
             target.onDamage(damage);
         }
         else
         {
-            Debug.Log("Miss!");
-            UIManager.instance.updateLogText(this.getObjectName() + " Attack -> " + target.getObjectName()
-                                + " : " + "Miss!");
+            //Debug.Log("Miss!");
+            UIManager.instance.updateLogText(this.getObjectName() + " Attack... Miss!");
         }
     }
     //스킬 사용
     public virtual bool skill(CharacterManager target, int num)
     {
-        Debug.Log(this.getObjectName() + " : SKILL!");
+        //Debug.Log(this.getObjectName() + " : SKILL!");
         return true;
     }
     public virtual string skill_1_Info()
@@ -150,6 +148,7 @@ public class CharacterManager : MonoBehaviour, ICharacter
     //공격받음
     public virtual void onDamage(int damage)
     {
+        UIManager.instance.updateLogText(this.getObjectName() + " take " + damage + "Damage!");
         curHp -= damage;
         StopCoroutine(hitMotion());
         StartCoroutine(hitMotion());

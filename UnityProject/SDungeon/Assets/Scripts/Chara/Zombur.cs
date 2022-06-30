@@ -26,7 +26,7 @@ public class Zombur : CharacterManager
     //공격
     public override void attack(CharacterManager target)
     {
-        Debug.Log("Attack!" + this.getName() + " -> " + target.getName());
+        //Debug.Log("Attack!" + this.getName() + " -> " + target.getName());
         int damage = 0;
         //데미지 계산 power만큼 반복, 01:-1,  2:0,  345:+1
         for(int i = 0 ; i < power ; i++)
@@ -59,9 +59,8 @@ public class Zombur : CharacterManager
         // 데미지 적용
         if(damage > 0)
         {
-            Debug.Log(this.getObjectName() + " : Attack " + target.getObjectName() + " " + damage + "Damage!");
-            UIManager.instance.updateLogText(this.getObjectName() + " Attack -> " + target.getObjectName()
-                                + " : " + damage + "Damage!");
+            //Debug.Log(this.getObjectName() + " : Attack " + target.getObjectName() + " " + damage + "Damage!");
+            UIManager.instance.updateLogText(this.getObjectName() + " Attack!");
             target.onDamage(damage);
             //좀비의 특성 2이상의 데미지를 줄 경우, 1회복
             if(damage >= 2)
@@ -71,9 +70,8 @@ public class Zombur : CharacterManager
         }
         else
         {
-            Debug.Log("Miss!");
-            UIManager.instance.updateLogText(this.getObjectName() + " Attack -> " + target.getObjectName()
-                                + " : " + "Miss!");
+            //Debug.Log("Miss!");
+            UIManager.instance.updateLogText(this.getObjectName() + " Attack... Miss!");
         }
     }
 

@@ -238,6 +238,7 @@ MonoBehaviour:
   enemyPrefabs:
   - {fileID: 7299161120560039649, guid: de5442d99748a4d47ab746f066c5929e, type: 3}
   - {fileID: 7130390554227125152, guid: 927a697eb3a134e41af49563210bcb4f, type: 3}
+  - {fileID: 7299161120560039649, guid: ead6a11a340f67344a83422b1c913b66, type: 3}
   playerTransform:
   - {fileID: 229096582}
   - {fileID: 308916603}

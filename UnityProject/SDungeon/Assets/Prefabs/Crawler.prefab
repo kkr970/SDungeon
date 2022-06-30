@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7317291857127330598}
   - component: {fileID: 6790332001847781906}
   - component: {fileID: 1456414306218417980}
+  - component: {fileID: 5938830506938976565}
   m_Layer: 0
   m_Name: Crawler
   m_TagString: Enemy
@@ -25,7 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7299161120560039649}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -111,6 +112,32 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.21, y: 3.78}
   m_EdgeRadius: 0
+--- !u!114 &5938830506938976565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7299161120560039649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d885f6b15b1d8b541989cb9d46d6b8fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turn: 0
+  maxHp: 0
+  curHp: 0
+  maxMp: 0
+  curMp: 0
+  power: 0
+  magic: 0
+  hide: 0
+  speed: 0
+  lucky: 0
+  wisdom: 0
+  hpBar: {fileID: 1065319657185777472}
+  mpBar: {fileID: 4716903329533624274}
+  nowTurn: {fileID: 3534294046727539727}
 --- !u!1001 &246705955587151457
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -255,6 +282,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8d2e66e8af5a1774796b8d0cce8b45d3, type: 3}
+--- !u!1 &3534294046727539727 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7364737575797122405, guid: 8d2e66e8af5a1774796b8d0cce8b45d3,
+    type: 3}
+  m_PrefabInstance: {fileID: 6284940937795922282}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7137446093136429208 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3762147380901145074, guid: 8d2e66e8af5a1774796b8d0cce8b45d3,
