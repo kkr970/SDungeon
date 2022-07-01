@@ -22,13 +22,6 @@ public class Skeletop : CharacterManager
         curMp = maxMp;
     }
 
-    //Turn 관련
-    public override void setTurn()
-    {
-        base.setTurn();
-        turn = turnSpeed + speed;
-    }
-
     public override bool skill(CharacterManager target, int num)
     {
         string skillName = "";
@@ -74,7 +67,7 @@ public class Skeletop : CharacterManager
             }
             else
             {
-                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + "... Miss!");
+                UIManager.instance.updateLogText(this.getObjectName() + " use " + skillName + "... Miss!");
             }
         }
         return true;

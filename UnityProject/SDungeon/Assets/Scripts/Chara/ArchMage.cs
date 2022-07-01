@@ -22,12 +22,6 @@ public class ArchMage : CharacterManager
         curMp = maxMp;
     }
 
-    //Turn 관련
-    public override void setTurn()
-    {
-        base.setTurn();
-        turn = turnSpeed + speed;
-    }
 
     // 스킬
     // 1. 얼음가시/mp 1소모 : magic계수, magic만큼 반복, 1번당 (0)123/(1)456의 데미지
@@ -82,9 +76,9 @@ public class ArchMage : CharacterManager
     }
     public override string skill_1_Info()
     {
-        return "얼음가시"
-             + "사용 MP : 1"
-             + "마법 계수 다단히트 데미지 D6( / 123 / 456 )";
+        return "얼음가시" + System.Environment.NewLine
+             + "사용 MP : 1" + System.Environment.NewLine
+             + "마법 D6( / 123 / 456 )의 다단히트 데미지";
     }
 
 

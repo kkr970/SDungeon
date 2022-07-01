@@ -15,7 +15,7 @@ public class Crawler : CharacterManager
         power = 3;
         magic = 1;
         hide = 1;
-        speed = 1;
+        speed = 2;
         lucky = 3;
         wisdom = 1;
     }
@@ -29,11 +29,6 @@ public class Crawler : CharacterManager
     }
 
     //Turn 관련
-    public override void setTurn()
-    {
-        base.setTurn();
-        turn = turnSpeed + speed;
-    }
     public override float getTurn()
     {
         if(isCrawling) return 6.5f;
@@ -87,14 +82,12 @@ public class Crawler : CharacterManager
             // 데미지 적용
             if(damage  > 0)
             {
+                UIManager.instance.updateLogText(this.getObjectName() + " use " + skillName + "!");
                 crawlTarget.onDamage(damage);
-                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + crawlTarget.getObjectName()
-                                        + " : " + damage + "Damage!");
             }
             else
             {
-                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + " -> " + crawlTarget.getObjectName()
-                                        + " : " + "Miss!");
+                UIManager.instance.updateLogText(this.getObjectName() + " use " + skillName + "... Miss!");
             }
             // 크롤링 종료
             isCrawling = false;

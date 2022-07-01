@@ -75,7 +75,7 @@ public class CharacterManager : MonoBehaviour, ICharacter
     }
     public virtual float getTurn()
     {
-        return turnSpeed;
+        return turnSpeed + speed;
     }
 
     //공격함

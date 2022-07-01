@@ -40,6 +40,7 @@
      <Compile Include="Assets\Scripts\Chara\ArchMage.cs" />
      <Compile Include="Assets\Scripts\Chara\Crawler.cs" />
      <Compile Include="Assets\Scripts\Chara\Knight.cs" />
+     <Compile Include="Assets\Scripts\Chara\Priest.cs" />
      <Compile Include="Assets\Scripts\Chara\Skeletop.cs" />
      <Compile Include="Assets\Scripts\Chara\Zombur.cs" />
      <Compile Include="Assets\Scripts\CharacterManager.cs" />

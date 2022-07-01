@@ -1,7 +1,7 @@
 using UnityEngine;
 
 // 기사
-// 특성 : 다른 플레이어보다 힘비례 체력이 높음
+// 특성 : 공격력이 높음
 public class Knight : CharacterManager
 {
     private void Awake()
@@ -22,13 +22,6 @@ public class Knight : CharacterManager
         curMp = maxMp;
     }
 
-    //Turn 관련
-    public override void setTurn()
-    {
-        base.setTurn();
-        turn = turnSpeed + speed;
-    }
-
     // 스킬
     // 1. 강타/mp 1소모 : power계수 (-1)0/(0)12/(+1)345의 데미지
     public override bool skill(CharacterManager target, int num)
@@ -42,7 +35,7 @@ public class Knight : CharacterManager
 
             skillName = "Strike";
             int damage = 0;
-            for(int i = 0 ; i < power ; i++)
+            for(int i = 0 ; i < power + 1 ; i++)
             {
                 int _num = Random.Range(0, 6);
                 switch(_num)
@@ -77,16 +70,16 @@ public class Knight : CharacterManager
             }
             else
             {
-                UIManager.instance.updateLogText(this.getObjectName() + " " + skillName + "... Miss!");
+                UIManager.instance.updateLogText(this.getObjectName() + " use " + skillName + "... Miss!");
             }
         }
         return true;
     }
     public override string skill_1_Info()
     {
-        return "강타"
-             + "사용 MP : 1"
-             + "힘 계수 데미지 D6( 1 / 23 / 456 )";
+        return "강타" + System.Environment.NewLine
+             + "사용 MP : 1" + System.Environment.NewLine
+             + "힘+1 D6( 1 / 23 / 456 )의 데미지";
     }
 
 
@@ -100,7 +93,7 @@ public class Knight : CharacterManager
     public override string getInfo()
     {
         string str = base.getInfo();
-        str = str + "체력과 기본공격력이 높음";
+        str = str + "기본공격력이 높음";
         return str;
     }
 }
