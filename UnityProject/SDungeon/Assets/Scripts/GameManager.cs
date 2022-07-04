@@ -10,6 +10,7 @@ enum GAMESTATE
     BATTLE,
     WIN,
     LOSE,
+    PAUSE,
 }
 enum TRUNSTATE
 {
@@ -33,6 +34,10 @@ public class GameManager : MonoBehaviour
         }
     }
     
+    //메뉴, 일시정지
+    public GameObject pauseMenu;
+    public bool isPause;
+
     public CharacterManager[] characters;
     public List<CharacterManager> lcharacters;
     public List<CharacterManager> lplayerCharacters;
@@ -67,6 +72,7 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         isProcessing = false;
+        isPause = false;
         gState = GAMESTATE.BATTLE;
         tState = TRUNSTATE.END;
         playerNum = 2; // 1, 2선택 또는 2 고정
@@ -96,6 +102,13 @@ public class GameManager : MonoBehaviour
     {
         if(gState == GAMESTATE.BATTLE)
         {
+            //일시정지
+            if(Input.GetKeyDown(KeyCode.Escape))
+            {
+                UIManager.instance.gamePause();
+                isPause = true;
+                gState = GAMESTATE.PAUSE;
+            }
             //턴이 종료 -> 턴을 시작으로 변경
             if(tState == TRUNSTATE.END)
             {
@@ -130,6 +143,17 @@ public class GameManager : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.R))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+        }
+        //일시정지
+        else if(gState == GAMESTATE.PAUSE)
+        {
+            //일시정지 해제
+            if(Input.GetKeyDown(KeyCode.Escape))
+            {
+                UIManager.instance.gameResume();
+                isPause = false;
+                gState = GAMESTATE.BATTLE;
             }
         }
     }
@@ -340,7 +364,7 @@ public class GameManager : MonoBehaviour
     {
         while(true)
         {
-            if(Input.GetMouseButtonDown(0))
+            if(!isPause && Input.GetAxisRaw("Select") != 0)
             {
                 Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
@@ -354,12 +378,12 @@ public class GameManager : MonoBehaviour
                         actionIndex = 0;
                         break;
                     }
-                    if(clickObject.name == "Skill Button")
+                    else if(clickObject.name == "Skill Button")
                     {
                         actionIndex = 1;
                         break;
                     }
-                    if(clickObject.name == "Skip Button")
+                    else if(clickObject.name == "Skip Button")
                     {
                         actionIndex = 2;
                         break;
@@ -376,7 +400,7 @@ public class GameManager : MonoBehaviour
         enemyAction = enemy.enemyActionAI();
         while(true)
         {
-            Debug.Log(enemy.getObjectName() + "가 선택한 행동 : " + enemyAction);
+            //Debug.Log(enemy.getObjectName() + "가 선택한 행동 : " + enemyAction);
             if(enemyAction != "WAIT")
                 break;
             yield return null;
@@ -387,7 +411,7 @@ public class GameManager : MonoBehaviour
     {
         while(true)
         {
-            if(Input.GetMouseButtonDown(0))
+            if(!isPause && Input.GetAxisRaw("Select") != 0)
             {
                 Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
@@ -409,6 +433,7 @@ public class GameManager : MonoBehaviour
                 }
             }
             //테스트용 랜덤타겟
+            /*
             if(Input.GetKeyDown(KeyCode.Space))
             {
                 int targetIndex = 0;
@@ -427,14 +452,16 @@ public class GameManager : MonoBehaviour
                 targetObject = lcharacters[targetIndex];
                 break;
             }
+            */
             yield return null;
         }
     }
+    // 스킬선택 UI에서 스킬을 선택
     IEnumerator selectSkill()
     {
         while(true)
         {
-            if(Input.GetMouseButtonDown(0))
+            if(!isPause && Input.GetAxisRaw("Select") != 0)
             {
                 Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);

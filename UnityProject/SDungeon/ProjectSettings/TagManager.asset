@@ -15,7 +15,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Pause UI
   - 
   - 
   - 
@@ -45,4 +45,7 @@ TagManager:
     locked: 0
   - name: Chara Layer
     uniqueID: 3721043451
+    locked: 0
+  - name: Pause Layer
+    uniqueID: 3678150079
     locked: 0

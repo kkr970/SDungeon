@@ -36,56 +36,62 @@ public class UIManager : MonoBehaviour
     //GameWin UI
     public GameObject gameWinUI;
 
+    //Pause UI
+    public GameObject gamePauseUI;
+
     void Update()
     {
         if(!Input.GetMouseButton(0))
         {
-            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
-            if(hit.collider != null)
+            if(!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
             {
-                GameObject clickObject = hit.transform.gameObject;
-                if(clickObject.tag == "Enemy" || clickObject.tag == "Player")
+                Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
+                if(!GameManager.instance.isPause && hit.collider != null)
                 {
-                    infoPanel.SetActive(true);
-                    if(Input.GetMouseButton(1))
-                        updateInfoText(clickObject.GetComponent<CharacterManager>().getStatInfo());
-                    else
-                        updateInfoText(clickObject.GetComponent<CharacterManager>().getInfo());
-                    updateInfoImage(clickObject.GetComponent<SpriteRenderer>().sprite);
+                    GameObject clickObject = hit.transform.gameObject;
+                    if(clickObject.tag == "Enemy" || clickObject.tag == "Player")
+                    {
+                        infoPanel.SetActive(true);
+                        if(Input.GetAxisRaw("Status") != 0)
+                            updateInfoText(clickObject.GetComponent<CharacterManager>().getStatInfo());
+                        else
+                            updateInfoText(clickObject.GetComponent<CharacterManager>().getInfo());
+                        updateInfoImage(clickObject.GetComponent<SpriteRenderer>().sprite);
+                    }
+                    else if(clickObject.name == "Attack Button")
+                    {
+                        infoPanel.SetActive(true);
+                        updateInfoText("공격" + System.Environment.NewLine
+                                    + "힘 계수 데미지 D6( 12 / 3 / 456 )");
+                        updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
+                    }
+                    else if(clickObject.name == "Skill Button")
+                    {
+                        infoPanel.SetActive(true);
+                        updateInfoText("스킬 사용");
+                        updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
+                    }
+                    else if(clickObject.name == "Skip Button")
+                    {
+                        infoPanel.SetActive(true);
+                        updateInfoText("스킵 사용" + System.Environment.NewLine
+                                    + "마나 회복 + 1 + (최대마나/5)");
+                        updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
+                    }
+                    else if(clickObject.name == "Skill1")
+                    {
+                        infoPanel.SetActive(true);
+                        updateInfoText(processingChara.GetComponent<CharacterManager>().skill_1_Info());
+                        updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
+                    }
                 }
-                else if(clickObject.name == "Attack Button")
+                else
                 {
-                    infoPanel.SetActive(true);
-                    updateInfoText("공격" + System.Environment.NewLine
-                                 + "힘 계수 데미지 D6( 12 / 3 / 456 )");
-                    updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
+                    infoPanel.SetActive(false);
+                    updateInfoText("");
+                    updateInfoImage(null);
                 }
-                else if(clickObject.name == "Skill Button")
-                {
-                    infoPanel.SetActive(true);
-                    updateInfoText("스킬 사용");
-                    updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
-                }
-                else if(clickObject.name == "Skip Button")
-                {
-                    infoPanel.SetActive(true);
-                    updateInfoText("스킵 사용" + System.Environment.NewLine
-                                 + "마나 회복 + 1 + (최대마나/5)");
-                    updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
-                }
-                else if(clickObject.name == "Skill1")
-                {
-                    infoPanel.SetActive(true);
-                    updateInfoText(processingChara.GetComponent<CharacterManager>().skill_1_Info());
-                    updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
-                }
-            }
-            else
-            {
-                infoPanel.SetActive(false);
-                updateInfoText("");
-                updateInfoImage(null);
             }
         }
     }
@@ -168,5 +174,17 @@ public class UIManager : MonoBehaviour
     {
         battleUI.SetActive(false);
         gameWinUI.SetActive(true);
+    }
+
+    //GamePause UI 메서드
+    public void gamePause()
+    {
+        gamePauseUI.SetActive(true);
+        Time.timeScale = 0.0f;
+    }
+    public void gameResume()
+    {
+        gamePauseUI.SetActive(false);
+        Time.timeScale = 1.0f;
     }
 }
