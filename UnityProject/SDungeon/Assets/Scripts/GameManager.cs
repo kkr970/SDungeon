@@ -105,9 +105,9 @@ public class GameManager : MonoBehaviour
             //일시정지
             if(Input.GetKeyDown(KeyCode.Escape))
             {
-                UIManager.instance.gamePause();
-                isPause = true;
                 gState = GAMESTATE.PAUSE;
+                isPause = true;
+                UIManager.instance.gamePause();
             }
             //턴이 종료 -> 턴을 시작으로 변경
             if(tState == TRUNSTATE.END)
@@ -148,14 +148,41 @@ public class GameManager : MonoBehaviour
         //일시정지
         else if(gState == GAMESTATE.PAUSE)
         {
+            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
+            GameObject clickObject = null;
+            if(hit.collider != null)
+            {
+                if(Input.GetAxisRaw("Select") != 0)
+                {
+                    clickObject = hit.transform.gameObject;
+                    //일시정지 해제
+                    if(clickObject.name == "Resume Button")
+                    {
+                        isPause = false;
+                        gState = GAMESTATE.BATTLE;
+                        UIManager.instance.gameResume();
+                    }
+                    //설정
+                    if(clickObject.name == "Setting Button")
+                    {
+                    }
+                    //종료
+                    if(clickObject.name == "Quit Button")
+                    {
+                    }
+                }
+            }
+            
             //일시정지 해제
             if(Input.GetKeyDown(KeyCode.Escape))
             {
-                UIManager.instance.gameResume();
                 isPause = false;
                 gState = GAMESTATE.BATTLE;
+                UIManager.instance.gameResume();
             }
         }
+
     }
 
 
@@ -372,7 +399,6 @@ public class GameManager : MonoBehaviour
                 if(hit.collider != null)
                 {
                     clickObject = hit.transform.gameObject;
-                    Debug.Log("Click " + clickObject.name);
                     if(clickObject.name == "Attack Button")
                     {
                         actionIndex = 0;
@@ -419,7 +445,6 @@ public class GameManager : MonoBehaviour
                 if(hit.collider != null)
                 {
                     clickObject = hit.transform.gameObject;
-                    Debug.Log("Click " + clickObject.name + clickObject.tag);
                     if(clickObject.tag == "Enemy" || clickObject.tag == "Player")
                     {
                         targetObject = clickObject.GetComponent<CharacterManager>();
@@ -469,7 +494,6 @@ public class GameManager : MonoBehaviour
                 if(hit.collider != null)
                 {
                     clickObject = hit.transform.gameObject;
-                    Debug.Log("Click " + clickObject.name + clickObject.tag);
                     if(clickObject.name == "Skill1")
                     {
                         skillIndex = 1;

@@ -32,8 +32,8 @@ public class Priest : CharacterManager
         // 빛의 창
         if(num == 1)
         {
-            if(curMp < 1) return false;
-            useMp(1);
+            if(curMp < 2) return false;
+            useMp(2);
 
             skillName = "Light Spear";
             // 적 공격

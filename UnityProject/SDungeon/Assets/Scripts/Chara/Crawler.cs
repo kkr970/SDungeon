@@ -51,43 +51,50 @@ public class Crawler : CharacterManager
         // 스킬2 기습()
         else if(num == 2)
         {
-            skillName = "Sucker Punch";
-            int damage = 0;
-            //데미지 계산 power만큼 반복, 012:0,  345:+1
-            for(int i = 0 ; i < power ; i++)
+            if(crawlTarget.State != STATE.DEAD)
             {
-                int _num = Random.Range(0, 6);
-                switch(_num)
+                skillName = "Sucker Punch";
+                int damage = 0;
+                //데미지 계산 power만큼 반복, 012:0,  345:+1
+                for(int i = 0 ; i < power ; i++)
                 {
-                    case 0:
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        damage++;
-                        break;
-                    case 4:
-                        damage++;
-                        break;
-                    case 5:
-                        damage++;
-                        break;
-                    default:
-                        Debug.LogWarning("Error, Attack()");
-                        break;
+                    int _num = Random.Range(0, 6);
+                    switch(_num)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            damage++;
+                            break;
+                        case 4:
+                            damage++;
+                            break;
+                        case 5:
+                            damage++;
+                            break;
+                        default:
+                            Debug.LogWarning("Error, Attack()");
+                            break;
+                    }
                 }
-            }
-            // 데미지 적용
-            if(damage  > 0)
-            {
-                UIManager.instance.updateLogText(this.getObjectName() + " use " + skillName + "!");
-                crawlTarget.onDamage(damage);
+                // 데미지 적용
+                if(damage  > 0)
+                {
+                    UIManager.instance.updateLogText(this.getObjectName() + " use " + skillName + "!");
+                    crawlTarget.onDamage(damage);
+                }
+                else
+                {
+                    UIManager.instance.updateLogText(this.getObjectName() + " use " + skillName + "... Miss!");
+                }
             }
             else
             {
-                UIManager.instance.updateLogText(this.getObjectName() + " use " + skillName + "... Miss!");
+                UIManager.instance.updateLogText(this.getObjectName() + " lost target");
             }
             // 크롤링 종료
             isCrawling = false;

@@ -5,6 +5,7 @@ ScriptsOnlyBuild:
     - Crawler
     - GameManager
     - Knight
+    - Priest
     - Skeletop
     - UIManager
     - Zombur
@@ -12,8 +13,6 @@ ScriptsOnlyBuild:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridPaintingState
-    - UnityEditor.Tilemaps.GridPaletteBrushes
-    - UnityEditor.Tilemaps.GridPalettes
     - UnityEditor.Tilemaps.SceneViewGridManager
     - UnityEditor.Tilemaps.TileDragAndDropManager
     Unity.Rider.Editor.dll:
@@ -90,9 +89,11 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 13754}
     - Class: 114
-      Script: {instanceID: 14192}
+      Script: {instanceID: 13920}
     - Class: 114
-      Script: {instanceID: 14370}
+      Script: {instanceID: 14194}
+    - Class: 114
+      Script: {instanceID: 14372}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -198,7 +199,7 @@ ScriptsOnlyBuild:
     className: Image
   - hash:
       serializedVersion: 2
-      Hash: a4178325c1b305fa6a21076bdf315dd2
+      Hash: 419be1b3d688b1062586b26f1a9176fa
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameManager
@@ -324,7 +325,7 @@ ScriptsOnlyBuild:
     className: Shadow
   - hash:
       serializedVersion: 2
-      Hash: 4cc92a125d91fb6d1b39319acac78107
+      Hash: 22596915de4f155eac557a31b0cbba60
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UIManager
@@ -532,6 +533,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestTools
     className: BeforeAfterTestCommandState
+  - hash:
+      serializedVersion: 2
+      Hash: 69f3c32d522996fd3ea48bf3752c187a
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Priest
   - hash:
       serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
