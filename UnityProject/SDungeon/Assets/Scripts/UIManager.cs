@@ -38,6 +38,7 @@ public class UIManager : MonoBehaviour
 
     //Pause UI
     public GameObject gamePauseUI;
+    private bool isSetting = false;
 
     void Update()
     {
@@ -105,39 +106,54 @@ public class UIManager : MonoBehaviour
         //일시정지 상태
         else if(GameManager.instance.gState == GAMESTATE.PAUSE)
         {
-            //UI 버튼 사용
-            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
-            GameObject clickObject = null;
-            if(hit.collider != null)
+            //설정창
+            if(isSetting)
             {
-                if(Input.GetMouseButtonDown(0))
+
+            }
+            //일반 화면
+            else
+            {
+                //UI 버튼 사용
+                Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
+                GameObject clickObject = null;
+                if(hit.collider != null)
                 {
-                    clickObject = hit.transform.gameObject;
-                    //일시정지 해제
-                    if(clickObject.name == "Resume Button")
+                    if(Input.GetMouseButtonDown(0))
                     {
-                        GameManager.instance.isPause = false;
-                        GameManager.instance.gState = GAMESTATE.BATTLE;
-                        UIManager.instance.gameResume();
+                        clickObject = hit.transform.gameObject;
+                        //일시정지 해제
+                        if(clickObject.name == "Resume Button")
+                        {
+                            GameManager.instance.isPause = false;
+                            GameManager.instance.gState = GAMESTATE.BATTLE;
+                            UIManager.instance.gameResume();
+                        }
+                        //설정
+                        if(clickObject.name == "Setting Button")
+                        {
+                            //isSetting = true;
+                        }
+                        //종료
+                        if(clickObject.name == "Quit Button")
+                        {
+                            #if UNITY_EDITOR
+                            UnityEditor.EditorApplication.isPlaying = false;
+                            #else
+                            Application.Quit();
+                            #endif
+                        }
                     }
-                    //설정
-                    if(clickObject.name == "Setting Button")
-                    {
-                    }
-                    //종료
-                    if(clickObject.name == "Quit Button")
-                    {
-                    }
+                }          
+                
+                //일시정지 해제
+                if(Input.GetKeyDown(KeyCode.Escape))
+                {
+                    GameManager.instance.isPause = false;
+                    GameManager.instance.gState = GAMESTATE.BATTLE;
+                    UIManager.instance.gameResume();
                 }
-            }          
-            
-            //일시정지 해제
-            if(Input.GetKeyDown(KeyCode.Escape))
-            {
-                GameManager.instance.isPause = false;
-                GameManager.instance.gState = GAMESTATE.BATTLE;
-                UIManager.instance.gameResume();
             }
         }
     }
