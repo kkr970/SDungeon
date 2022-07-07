@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine;
 
-enum GAMESTATE
+public enum GAMESTATE
 {
     BATTLE,
     WIN,
@@ -35,7 +35,6 @@ public class GameManager : MonoBehaviour
     }
     
     //메뉴, 일시정지
-    public GameObject pauseMenu;
     public bool isPause;
 
     public CharacterManager[] characters;
@@ -55,7 +54,7 @@ public class GameManager : MonoBehaviour
     private int roundNum;
 
     //각종 변수들
-    private GAMESTATE gState;
+    public GAMESTATE gState;
     private TRUNSTATE tState;
     private bool isProcessing;
 
@@ -102,13 +101,6 @@ public class GameManager : MonoBehaviour
     {
         if(gState == GAMESTATE.BATTLE)
         {
-            //일시정지
-            if(Input.GetKeyDown(KeyCode.Escape))
-            {
-                gState = GAMESTATE.PAUSE;
-                isPause = true;
-                UIManager.instance.gamePause();
-            }
             //턴이 종료 -> 턴을 시작으로 변경
             if(tState == TRUNSTATE.END)
             {
@@ -148,39 +140,7 @@ public class GameManager : MonoBehaviour
         //일시정지
         else if(gState == GAMESTATE.PAUSE)
         {
-            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
-            GameObject clickObject = null;
-            if(hit.collider != null)
-            {
-                if(Input.GetAxisRaw("Select") != 0)
-                {
-                    clickObject = hit.transform.gameObject;
-                    //일시정지 해제
-                    if(clickObject.name == "Resume Button")
-                    {
-                        isPause = false;
-                        gState = GAMESTATE.BATTLE;
-                        UIManager.instance.gameResume();
-                    }
-                    //설정
-                    if(clickObject.name == "Setting Button")
-                    {
-                    }
-                    //종료
-                    if(clickObject.name == "Quit Button")
-                    {
-                    }
-                }
-            }
-            
-            //일시정지 해제
-            if(Input.GetKeyDown(KeyCode.Escape))
-            {
-                isPause = false;
-                gState = GAMESTATE.BATTLE;
-                UIManager.instance.gameResume();
-            }
+            //UIManager에서 작동중
         }
 
     }
@@ -391,7 +351,7 @@ public class GameManager : MonoBehaviour
     {
         while(true)
         {
-            if(!isPause && Input.GetAxisRaw("Select") != 0)
+            if(!isPause && Input.GetMouseButtonDown(0))
             {
                 Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
@@ -437,7 +397,7 @@ public class GameManager : MonoBehaviour
     {
         while(true)
         {
-            if(!isPause && Input.GetAxisRaw("Select") != 0)
+            if(!isPause && Input.GetMouseButtonDown(0))
             {
                 Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
@@ -486,7 +446,7 @@ public class GameManager : MonoBehaviour
     {
         while(true)
         {
-            if(!isPause && Input.GetAxisRaw("Select") != 0)
+            if(!isPause && Input.GetMouseButtonDown(0))
             {
                 Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
