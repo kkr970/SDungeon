@@ -18,27 +18,35 @@ public class UIManager : MonoBehaviour
 
     //Battle UI
     public GameObject battleUI;
-
+        // SelectUI
     public GameObject actionSelectUI;
     public GameObject actionTextUI;
     public GameObject skillSelectUI;
-
+        // Battle Log UI
     public ScrollRect logScroll;
+        // Turn UI
     public Text turnText;
-
+        // Character info
     public GameObject infoPanel;
     public Image infoImage;
     public GameObject processingChara;
+
+    //Pause UI
+    public GameObject gamePauseUI;
+        // Panel
+    public GameObject pauseButtonPanel;
+    public GameObject pauseSettingPanel;
+        // boolean
+    private bool isSetting = false;
+        // sound slider
+    public Slider bgmVolumeSlider;
+    private float bgmVolume = 0.2f;
 
     //GameOver UI
     public GameObject gameOverUI;
 
     //GameWin UI
     public GameObject gameWinUI;
-
-    //Pause UI
-    public GameObject gamePauseUI;
-    private bool isSetting = false;
 
     void Update()
     {
@@ -100,6 +108,7 @@ public class UIManager : MonoBehaviour
                 GameManager.instance.gState = GAMESTATE.PAUSE;
                 GameManager.instance.isPause = true;
                 gamePause();
+                return;
             }
 
         }
@@ -109,7 +118,31 @@ public class UIManager : MonoBehaviour
             //설정창
             if(isSetting)
             {
+                Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
+                GameObject clickObject = null;
+                if(hit.collider != null)
+                {
+                    if(Input.GetMouseButtonDown(0))
+                    {
+                        clickObject = hit.transform.gameObject;
+                        // 뒤로가기
+                        if(clickObject.name == "Back")
+                        {
+                            isSetting = false;
+                            buttonUI_ON();
+                            settingUI_OFF();
+                        }
+                    }
+                }
 
+                // 뒤로가기
+                if(Input.GetKeyDown(KeyCode.Escape))
+                {
+                    isSetting = false;
+                    buttonUI_ON();
+                    settingUI_OFF();
+                }
             }
             //일반 화면
             else
@@ -123,6 +156,7 @@ public class UIManager : MonoBehaviour
                     if(Input.GetMouseButtonDown(0))
                     {
                         clickObject = hit.transform.gameObject;
+                        Debug.Log(clickObject.name);
                         //일시정지 해제
                         if(clickObject.name == "Resume Button")
                         {
@@ -131,12 +165,14 @@ public class UIManager : MonoBehaviour
                             UIManager.instance.gameResume();
                         }
                         //설정
-                        if(clickObject.name == "Setting Button")
+                        else if(clickObject.name == "Setting Button")
                         {
-                            //isSetting = true;
+                            isSetting = true;
+                            buttonUI_OFF();
+                            settingUI_ON();
                         }
                         //종료
-                        if(clickObject.name == "Quit Button")
+                        else if(clickObject.name == "Quit Button")
                         {
                             #if UNITY_EDITOR
                             UnityEditor.EditorApplication.isPlaying = false;
@@ -164,7 +200,6 @@ public class UIManager : MonoBehaviour
     {
         turnText.text = "Turn : " + newTurn;
     }
-    
         //행동 선택 UI on/off
     public void actionSelectUI_ON()
     {
@@ -192,7 +227,6 @@ public class UIManager : MonoBehaviour
     {
         skillSelectUI.SetActive(false);
     }
-
         //로그 업데이트
     public void updateLogText(string log)
     {
@@ -224,12 +258,48 @@ public class UIManager : MonoBehaviour
     }
     
 
+    //GamePause UI 메서드
+        // 일시정지
+    public void gamePause()
+    {
+        battleUI.SetActive(false);
+        gamePauseUI.SetActive(true);
+        Time.timeScale = 0.0f;
+    }
+        // 일시정지 해제
+    public void gameResume()
+    {
+        battleUI.SetActive(true);
+        gamePauseUI.SetActive(false);
+        Time.timeScale = 1.0f;
+    }
+        // 일시정지 초기 버튼 UI on/off
+    public void buttonUI_ON()
+    {
+        pauseButtonPanel.SetActive(true);
+    }
+    public void buttonUI_OFF()
+    {
+        pauseButtonPanel.SetActive(false);
+    }
+        // 설정 UI on/off
+    public void settingUI_ON()
+    {
+        pauseSettingPanel.SetActive(true);
+    }
+    public void settingUI_OFF()
+    {
+        pauseSettingPanel.SetActive(false);
+    }
+
+
     //GameOver UI 메서드
     public void gameOver()
     {
         battleUI.SetActive(false);
         gameOverUI.SetActive(true);
     }
+
 
     //GameWin UI 메서드
     public void gameWin()
@@ -238,15 +308,5 @@ public class UIManager : MonoBehaviour
         gameWinUI.SetActive(true);
     }
 
-    //GamePause UI 메서드
-    public void gamePause()
-    {
-        gamePauseUI.SetActive(true);
-        Time.timeScale = 0.0f;
-    }
-    public void gameResume()
-    {
-        gamePauseUI.SetActive(false);
-        Time.timeScale = 1.0f;
-    }
+
 }

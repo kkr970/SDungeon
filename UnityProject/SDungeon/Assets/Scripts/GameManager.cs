@@ -99,6 +99,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        //전투
         if(gState == GAMESTATE.BATTLE)
         {
             //턴이 종료 -> 턴을 시작으로 변경
