@@ -67,6 +67,9 @@ public class GameManager : MonoBehaviour
 
     string enemyAction = "WAIT";
 
+    //사운드 변수
+    public float bgmValue;
+    public AudioSource bgmAudio;
 
     void Awake()
     {
@@ -77,6 +80,10 @@ public class GameManager : MonoBehaviour
         playerNum = 2; // 1, 2선택 또는 2 고정
         enemyNum = 3;  // 플레이어:적 / 1:2 / 2:3 / x:3
         roundNum = 0;
+
+        //sound
+        bgmValue = PlayerPrefs.GetFloat("bgmValue", 0.2f);
+        bgmAudio.volume = bgmValue;
     }
 
     void Start()

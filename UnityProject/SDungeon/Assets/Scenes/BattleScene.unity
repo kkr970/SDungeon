@@ -285,6 +285,8 @@ MonoBehaviour:
   - {fileID: 857946797}
   - {fileID: 175418290}
   gState: 0
+  bgmValue: 0
+  bgmAudio: {fileID: 172890983}
 --- !u!4 &124206925
 Transform:
   m_ObjectHideFlags: 0

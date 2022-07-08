@@ -16,7 +16,7 @@ public class SoundManager : MonoBehaviour
 
     void Start()
     {
-        bgmValue = PlayerPrefs.GetFloat("bgmValue", 0.2f);
+        bgmValue = GameManager.instance.bgmValue;
         bgmVolume.value = bgmValue;
         bgmAudio.volume = bgmVolume.value;
     }
