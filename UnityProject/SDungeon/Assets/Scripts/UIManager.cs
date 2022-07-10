@@ -54,52 +54,53 @@ public class UIManager : MonoBehaviour
         if(GameManager.instance.gState == GAMESTATE.BATTLE && !Input.GetMouseButton(0))
         {
             //UI Info Text 업데이트
-            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
-            if(!GameManager.instance.isPause && hit.collider != null)
+            if(!GameManager.instance.isPause)
             {
-                GameObject clickObject = hit.transform.gameObject;
-                if(clickObject.tag == "Enemy" || clickObject.tag == "Player")
+                GameObject clickObject = mouseGetObject();
+                if(clickObject != null)
                 {
-                    infoPanel.SetActive(true);
-                    if(Input.GetMouseButton(1))
-                        updateInfoText(clickObject.GetComponent<CharacterManager>().getStatInfo());
-                    else
-                        updateInfoText(clickObject.GetComponent<CharacterManager>().getInfo());
-                    updateInfoImage(clickObject.GetComponent<SpriteRenderer>().sprite);
+                    if(clickObject.tag == "Enemy" || clickObject.tag == "Player")
+                    {
+                        infoPanel.SetActive(true);
+                        if(Input.GetMouseButton(1))
+                            updateInfoText(clickObject.GetComponent<CharacterManager>().getStatInfo());
+                        else
+                            updateInfoText(clickObject.GetComponent<CharacterManager>().getInfo());
+                        updateInfoImage(clickObject.GetComponent<SpriteRenderer>().sprite);
+                    }
+                    else if(clickObject.name == "Attack Button")
+                    {
+                        infoPanel.SetActive(true);
+                        updateInfoText("공격" + System.Environment.NewLine
+                                    + "힘 계수 데미지 D6( 12 / 3 / 456 )");
+                        updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
+                    }
+                    else if(clickObject.name == "Skill Button")
+                    {
+                        infoPanel.SetActive(true);
+                        updateInfoText("스킬 사용");
+                        updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
+                    }
+                    else if(clickObject.name == "Skip Button")
+                    {
+                        infoPanel.SetActive(true);
+                        updateInfoText("스킵 사용" + System.Environment.NewLine
+                                    + "마나 회복 + 1 + (최대마나/5)");
+                        updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
+                    }
+                    else if(clickObject.name == "Skill1")
+                    {
+                        infoPanel.SetActive(true);
+                        updateInfoText(processingChara.GetComponent<CharacterManager>().skill_1_Info());
+                        updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
+                    }
                 }
-                else if(clickObject.name == "Attack Button")
+                else
                 {
-                    infoPanel.SetActive(true);
-                    updateInfoText("공격" + System.Environment.NewLine
-                                + "힘 계수 데미지 D6( 12 / 3 / 456 )");
-                    updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
+                    infoPanel.SetActive(false);
+                    updateInfoText("");
+                    updateInfoImage(null);
                 }
-                else if(clickObject.name == "Skill Button")
-                {
-                    infoPanel.SetActive(true);
-                    updateInfoText("스킬 사용");
-                    updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
-                }
-                else if(clickObject.name == "Skip Button")
-                {
-                    infoPanel.SetActive(true);
-                    updateInfoText("스킵 사용" + System.Environment.NewLine
-                                + "마나 회복 + 1 + (최대마나/5)");
-                    updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
-                }
-                else if(clickObject.name == "Skill1")
-                {
-                    infoPanel.SetActive(true);
-                    updateInfoText(processingChara.GetComponent<CharacterManager>().skill_1_Info());
-                    updateInfoImage(processingChara.GetComponent<SpriteRenderer>().sprite);
-                }
-            }
-            else
-            {
-                infoPanel.SetActive(false);
-                updateInfoText("");
-                updateInfoImage(null);
             }
         
             //일시정지
@@ -118,21 +119,15 @@ public class UIManager : MonoBehaviour
             //설정창
             if(isSetting)
             {
-                Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
-                GameObject clickObject = null;
-                if(hit.collider != null)
+                if(Input.GetMouseButtonDown(0))
                 {
-                    if(Input.GetMouseButtonDown(0))
+                    GameObject clickObject = mouseGetObject();
+                    // 뒤로가기
+                    if(clickObject.name == "Back")
                     {
-                        clickObject = hit.transform.gameObject;
-                        // 뒤로가기
-                        if(clickObject.name == "Back")
-                        {
-                            isSetting = false;
-                            buttonUI_ON();
-                            settingUI_OFF();
-                        }
+                        isSetting = false;
+                        buttonUI_ON();
+                        settingUI_OFF();
                     }
                 }
 
@@ -148,38 +143,31 @@ public class UIManager : MonoBehaviour
             else
             {
                 //UI 버튼 사용
-                Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
-                GameObject clickObject = null;
-                if(hit.collider != null)
+                if(Input.GetMouseButtonDown(0))
                 {
-                    if(Input.GetMouseButtonDown(0))
+                    GameObject clickObject = mouseGetObject();
+                    //일시정지 해제
+                    if(clickObject.name == "Resume Button")
                     {
-                        clickObject = hit.transform.gameObject;
-                        Debug.Log(clickObject.name);
-                        //일시정지 해제
-                        if(clickObject.name == "Resume Button")
-                        {
-                            GameManager.instance.isPause = false;
-                            GameManager.instance.gState = GAMESTATE.BATTLE;
-                            UIManager.instance.gameResume();
-                        }
-                        //설정
-                        else if(clickObject.name == "Setting Button")
-                        {
-                            isSetting = true;
-                            buttonUI_OFF();
-                            settingUI_ON();
-                        }
-                        //종료
-                        else if(clickObject.name == "Quit Button")
-                        {
-                            #if UNITY_EDITOR
-                            UnityEditor.EditorApplication.isPlaying = false;
-                            #else
-                            Application.Quit();
-                            #endif
-                        }
+                        GameManager.instance.isPause = false;
+                        GameManager.instance.gState = GAMESTATE.BATTLE;
+                        UIManager.instance.gameResume();
+                    }
+                    //설정
+                    else if(clickObject.name == "Setting Button")
+                    {
+                        isSetting = true;
+                        buttonUI_OFF();
+                        settingUI_ON();
+                    }
+                    //종료
+                    else if(clickObject.name == "Quit Button")
+                    {
+                        #if UNITY_EDITOR
+                        UnityEditor.EditorApplication.isPlaying = false;
+                        #else
+                        Application.Quit();
+                        #endif
                     }
                 }          
                 
@@ -308,5 +296,18 @@ public class UIManager : MonoBehaviour
         gameWinUI.SetActive(true);
     }
 
+    //클릭 오브젝트 이름 가져오기
+    public GameObject mouseGetObject()
+    {
+        Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
+        GameObject clickObject = null;
+        if(hit.collider != null)
+        {
+            clickObject = hit.transform.gameObject;
+            return clickObject;
+        }
+        return null;
+    }
 
 }

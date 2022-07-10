@@ -36,7 +36,6 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\ButtonEvent.cs" />
      <Compile Include="Assets\Scripts\Chara\ArchMage.cs" />
      <Compile Include="Assets\Scripts\Chara\Crawler.cs" />
      <Compile Include="Assets\Scripts\Chara\Knight.cs" />

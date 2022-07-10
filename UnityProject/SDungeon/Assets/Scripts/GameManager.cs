@@ -361,12 +361,9 @@ public class GameManager : MonoBehaviour
         {
             if(!isPause && Input.GetMouseButtonDown(0))
             {
-                Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
-                GameObject clickObject = null;
-                if(hit.collider != null)
+                GameObject clickObject = UIManager.instance.mouseGetObject();
+                if(clickObject != null)
                 {
-                    clickObject = hit.transform.gameObject;
                     if(clickObject.name == "Attack Button")
                     {
                         actionIndex = 0;
@@ -407,12 +404,9 @@ public class GameManager : MonoBehaviour
         {
             if(!isPause && Input.GetMouseButtonDown(0))
             {
-                Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
-                GameObject clickObject = null;
-                if(hit.collider != null)
+                GameObject clickObject = UIManager.instance.mouseGetObject();
+                if(clickObject != null)
                 {
-                    clickObject = hit.transform.gameObject;
                     if(clickObject.tag == "Enemy" || clickObject.tag == "Player")
                     {
                         targetObject = clickObject.GetComponent<CharacterManager>();
@@ -456,12 +450,9 @@ public class GameManager : MonoBehaviour
         {
             if(!isPause && Input.GetMouseButtonDown(0))
             {
-                Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
-                GameObject clickObject = null;
-                if(hit.collider != null)
+                GameObject clickObject = UIManager.instance.mouseGetObject();
+                if(clickObject != null)
                 {
-                    clickObject = hit.transform.gameObject;
                     if(clickObject.name == "Skill1")
                     {
                         skillIndex = 1;
