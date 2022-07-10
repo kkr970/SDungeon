@@ -48,6 +48,18 @@ public class UIManager : MonoBehaviour
     //GameWin UI
     public GameObject gameWinUI;
 
+    void FixedUpdate()
+    {
+        //UI Log Text 업데이트
+        if(!Input.GetMouseButton(0))
+        {
+            if(logScroll.GetComponentInChildren<Scrollbar>() != null)
+            {
+                logScroll.GetComponentInChildren<Scrollbar>().value -= 0.01f;
+            }
+        }
+    }
+
     void Update()
     {
         //게임 진행중
@@ -102,7 +114,7 @@ public class UIManager : MonoBehaviour
                     updateInfoImage(null);
                 }
             }
-        
+
             //일시정지
             if(Input.GetKeyDown(KeyCode.Escape))
             {
@@ -227,10 +239,6 @@ public class UIManager : MonoBehaviour
         {
             logScroll.GetComponentInChildren<Text>().text = "> " + log;
         }
-        if(logScroll.GetComponentInChildren<Scrollbar>() != null)
-            logScroll.GetComponentInChildren<Scrollbar>().value = 0.0f;
-        
-        
     }
         //정보 업데이트
     public void updateInfoText(string info)
