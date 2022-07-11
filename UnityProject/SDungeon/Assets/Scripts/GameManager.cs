@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
             GameObject i0 = Instantiate(enemyPrefabs[num], enemyTransform[i]);
             i0.name = (i+1) + "." + i0.GetComponent<CharacterManager>().getName();
         }
-        mSetTurn();
+        mSetRound();
         findPlayerEnemy();
     }
 
@@ -150,14 +150,13 @@ public class GameManager : MonoBehaviour
         {
             //UIManager에서 작동중
         }
-
     }
 
 
-    //턴의 순서를 정함
-    void mSetTurn()
+    //턴의 순서를 정함, 라운드가 종료함으로 다음 라운드를 준비
+    void mSetRound()
     {
-        //Debug.Log("Input : SetTurn!");
+        //Debug.Log("SetRound");
         roundNum += 1;
         UIManager.instance.updateTurnText(roundNum);
         
@@ -176,6 +175,12 @@ public class GameManager : MonoBehaviour
         lcharacters.Sort((a, b) => a.getTurn().CompareTo(b.getTurn())*(-1) );
         //턴 알림
         nextTurn(0);
+    }
+    IEnumerator mSetRound_Coroutine()
+    {
+        mSetRound();
+        yield return new WaitForSeconds(1.0f);
+        //다음 라운드를 진행한다는 애니메이션이나 효과를 넣으면?
     }
 
     // 턴 진행
@@ -197,7 +202,9 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    //턴 진행 코루틴
+    // 턴 진행 코루틴
+    // 몬스터 소요 시간 : 0.8 + 0.3 + @
+    // 플레이어 소요 시간 : 공격0.3 + 0.3 + @ / 스킬0.5 + 0.3 + @
     IEnumerator processTurn(CharacterManager chara, int index)
     {
         resetAction = false;
@@ -277,6 +284,7 @@ public class GameManager : MonoBehaviour
                     //공격
                     chara.attack(targetObject);
                     UIManager.instance.actionTextUI_OFF();
+                    yield return new WaitForSeconds(0.3f);
                 }
                 // 스킬
                 else if(actionIndex == 1)
@@ -307,6 +315,7 @@ public class GameManager : MonoBehaviour
 
                     // 스킬을 사용
                     flag = chara.skill(targetObject, skillIndex);
+                    yield return new WaitForSeconds(0.5f);
                     // mp 부족
                     if(!flag)
                     {
@@ -337,7 +346,7 @@ public class GameManager : MonoBehaviour
         lcharacters[index].offNowTurn();
         nextTurn(index);
 
-        // 모든 캐릭터가 행동을 종료시 자동 setTurn()
+        // 모든 캐릭터가 행동을 종료시 자동 mSetRound()
         int j = 0;
         for(; j < lcharacters.Count ; j++)
         {
@@ -349,11 +358,13 @@ public class GameManager : MonoBehaviour
         }
         if(j == lcharacters.Count)
         {
-            mSetTurn();
+            //mSetRound();
+            yield return StartCoroutine(mSetRound_Coroutine());
         }
         
         //Debug.Log("코루틴 종료");
     }
+    
     // 행동 선택 
     IEnumerator selectAction()
     {

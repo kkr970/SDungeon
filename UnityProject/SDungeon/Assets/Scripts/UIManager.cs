@@ -55,7 +55,11 @@ public class UIManager : MonoBehaviour
         {
             if(logScroll.GetComponentInChildren<Scrollbar>() != null)
             {
-                logScroll.GetComponentInChildren<Scrollbar>().value -= 0.01f;
+                if(logScroll.GetComponentInChildren<Scrollbar>().value >= 0)
+                {
+                    float speed = logScroll.GetComponentInChildren<Scrollbar>().size / 15.0f;
+                    logScroll.GetComponentInChildren<Scrollbar>().value -= speed;
+                }
             }
         }
     }

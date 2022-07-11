@@ -162,9 +162,13 @@ public class CharacterManager : MonoBehaviour, ICharacter
     //공격받는 모션
     private IEnumerator hitMotion()
     {
-        this.GetComponent<SpriteRenderer>().color = new Vector4(1.0f, 0.5f, 0.5f, 1.0f);
+        Color curColor = this.GetComponent<SpriteRenderer>().color;
+        Color newColor = curColor;
+        newColor.g = 0.5f;
+        newColor.b = 0.5f;
+        this.GetComponent<SpriteRenderer>().color = newColor;
         yield return new WaitForSeconds(0.29f);
-        this.GetComponent<SpriteRenderer>().color = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+        this.GetComponent<SpriteRenderer>().color = curColor;
     }
     //mp사용
     public virtual void useMp(int mp)
