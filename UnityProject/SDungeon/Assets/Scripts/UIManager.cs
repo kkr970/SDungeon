@@ -138,12 +138,15 @@ public class UIManager : MonoBehaviour
                 if(Input.GetMouseButtonDown(0))
                 {
                     GameObject clickObject = mouseGetObject();
-                    // 뒤로가기
-                    if(clickObject.name == "Back")
+                    if(clickObject != null)
                     {
-                        isSetting = false;
-                        buttonUI_ON();
-                        settingUI_OFF();
+                        // 뒤로가기
+                        if(clickObject.name == "Back")
+                        {
+                            isSetting = false;
+                            buttonUI_ON();
+                            settingUI_OFF();
+                        }
                     }
                 }
 
@@ -162,28 +165,31 @@ public class UIManager : MonoBehaviour
                 if(Input.GetMouseButtonDown(0))
                 {
                     GameObject clickObject = mouseGetObject();
-                    //일시정지 해제
-                    if(clickObject.name == "Resume Button")
+                    if(clickObject != null)
                     {
-                        GameManager.instance.isPause = false;
-                        GameManager.instance.gState = GAMESTATE.BATTLE;
-                        UIManager.instance.gameResume();
-                    }
-                    //설정
-                    else if(clickObject.name == "Setting Button")
-                    {
-                        isSetting = true;
-                        buttonUI_OFF();
-                        settingUI_ON();
-                    }
-                    //종료
-                    else if(clickObject.name == "Quit Button")
-                    {
-                        #if UNITY_EDITOR
-                        UnityEditor.EditorApplication.isPlaying = false;
-                        #else
-                        Application.Quit();
-                        #endif
+                        //일시정지 해제
+                        if(clickObject.name == "Resume Button")
+                        {
+                            GameManager.instance.isPause = false;
+                            GameManager.instance.gState = GAMESTATE.BATTLE;
+                            UIManager.instance.gameResume();
+                        }
+                        //설정
+                        else if(clickObject.name == "Setting Button")
+                        {
+                            isSetting = true;
+                            buttonUI_OFF();
+                            settingUI_ON();
+                        }
+                        //종료
+                        else if(clickObject.name == "Quit Button")
+                        {
+                            #if UNITY_EDITOR
+                            UnityEditor.EditorApplication.isPlaying = false;
+                            #else
+                            Application.Quit();
+                            #endif
+                        }
                     }
                 }          
                 
