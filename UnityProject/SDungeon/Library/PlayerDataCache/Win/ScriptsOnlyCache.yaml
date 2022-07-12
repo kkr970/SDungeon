@@ -14,6 +14,8 @@ ScriptsOnlyBuild:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridPaintingState
+    - UnityEditor.Tilemaps.GridPaletteBrushes
+    - UnityEditor.Tilemaps.GridPalettes
     - UnityEditor.Tilemaps.SceneViewGridManager
     - UnityEditor.Tilemaps.TileDragAndDropManager
     Unity.Rider.Editor.dll:
@@ -86,27 +88,27 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 12194}
     - Class: 114
-      Script: {instanceID: 12284}
+      Script: {instanceID: 12282}
     - Class: 114
-      Script: {instanceID: 12346}
+      Script: {instanceID: 12344}
     - Class: 114
-      Script: {instanceID: 12636}
+      Script: {instanceID: 12634}
     - Class: 114
-      Script: {instanceID: 12660}
+      Script: {instanceID: 12658}
     - Class: 114
-      Script: {instanceID: 13244}
+      Script: {instanceID: 13242}
     - Class: 114
-      Script: {instanceID: 13754}
+      Script: {instanceID: 13752}
     - Class: 114
-      Script: {instanceID: 13920}
+      Script: {instanceID: 13918}
     - Class: 114
-      Script: {instanceID: 13996}
+      Script: {instanceID: 13994}
     - Class: 114
-      Script: {instanceID: 14196}
+      Script: {instanceID: 14194}
     - Class: 114
-      Script: {instanceID: 14374}
+      Script: {instanceID: 14372}
     - Class: 114
-      Script: {instanceID: 14416}
+      Script: {instanceID: 14414}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -342,12 +344,6 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UIManager
-  - hash:
-      serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: ButtonEvent
   - hash:
       serializedVersion: 2
       Hash: cc4274b586df3c02688bac01b88bd16c
