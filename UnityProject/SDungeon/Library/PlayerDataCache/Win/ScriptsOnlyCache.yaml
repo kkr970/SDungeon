@@ -8,6 +8,9 @@ ScriptsOnlyBuild:
     - Priest
     - Skeletop
     - SoundManager
+    - StartManager
+    - StartSoundManager
+    - StartUIManager
     - UIManager
     - Zombur
     Unity.2D.Animation.Editor.dll:
@@ -68,47 +71,110 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11266}
+      Script: {instanceID: 11268}
     - Class: 114
-      Script: {instanceID: 11554}
+      Script: {instanceID: 11556}
     - Class: 114
-      Script: {instanceID: 11558}
+      Script: {instanceID: 11560}
     - Class: 114
-      Script: {instanceID: 11576}
+      Script: {instanceID: 11578}
     - Class: 114
-      Script: {instanceID: 11610}
+      Script: {instanceID: 11612}
     - Class: 114
-      Script: {instanceID: 11622}
+      Script: {instanceID: 11624}
     - Class: 114
-      Script: {instanceID: 11786}
+      Script: {instanceID: 11788}
     - Class: 114
-      Script: {instanceID: 12108}
+      Script: {instanceID: 12110}
     - Class: 114
-      Script: {instanceID: 12160}
+      Script: {instanceID: 12162}
     - Class: 114
-      Script: {instanceID: 12194}
+      Script: {instanceID: 12196}
     - Class: 114
-      Script: {instanceID: 12282}
+      Script: {instanceID: 12284}
     - Class: 114
-      Script: {instanceID: 12344}
+      Script: {instanceID: 12346}
     - Class: 114
-      Script: {instanceID: 12634}
+      Script: {instanceID: 12636}
     - Class: 114
-      Script: {instanceID: 12658}
+      Script: {instanceID: 12660}
     - Class: 114
-      Script: {instanceID: 13242}
+      Script: {instanceID: 13244}
     - Class: 114
-      Script: {instanceID: 13752}
+      Script: {instanceID: 13754}
     - Class: 114
-      Script: {instanceID: 13918}
+      Script: {instanceID: 13920}
     - Class: 114
-      Script: {instanceID: 13994}
+      Script: {instanceID: 13996}
     - Class: 114
-      Script: {instanceID: 14194}
+      Script: {instanceID: 14196}
     - Class: 114
-      Script: {instanceID: 14372}
+      Script: {instanceID: 14374}
     - Class: 114
-      Script: {instanceID: 14414}
+      Script: {instanceID: 14416}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
+    - Class: 212
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
+    Assets/Scenes/StartScene.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 61
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 11268}
+    - Class: 114
+      Script: {instanceID: 11556}
+    - Class: 114
+      Script: {instanceID: 11612}
+    - Class: 114
+      Script: {instanceID: 12162}
+    - Class: 114
+      Script: {instanceID: 12284}
+    - Class: 114
+      Script: {instanceID: 13754}
+    - Class: 114
+      Script: {instanceID: 14374}
+    - Class: 114
+      Script: {instanceID: 14416}
+    - Class: 114
+      Script: {instanceID: 15642}
+    - Class: 114
+      Script: {instanceID: 16814}
+    - Class: 114
+      Script: {instanceID: 24100}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -668,7 +734,26 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
+  - hash:
+      serializedVersion: 2
+      Hash: cfef39fbe2ceb721b8cb12bd9e46be89
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: StartUIManager
+  - hash:
+      serializedVersion: 2
+      Hash: 3459eccc2592039b44cda9c728c1a291
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: StartManager
+  - hash:
+      serializedVersion: 2
+      Hash: 5464e928f744ddbcabadcc8d5f262d95
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: StartSoundManager
   platform: 5
   scenePathNames:
+  - Assets/Scenes/StartScene.unity
   - Assets/Scenes/BattleScene.unity
   playerPath: D:/WORK/coding/SDungeonBuild/SDungeon.exe

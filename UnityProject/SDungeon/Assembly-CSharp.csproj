@@ -46,6 +46,9 @@
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\ICharacter.cs" />
      <Compile Include="Assets\Scripts\SoundManager.cs" />
+     <Compile Include="Assets\Scripts\StartSceneScripts\StartManager.cs" />
+     <Compile Include="Assets\Scripts\StartSceneScripts\StartSoundManager.cs" />
+     <Compile Include="Assets\Scripts\StartSceneScripts\StartUIManager.cs" />
      <Compile Include="Assets\Scripts\UIManager.cs" />
     <Reference Include="UnityEngine">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.15f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
