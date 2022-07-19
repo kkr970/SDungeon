@@ -67,10 +67,10 @@ public class UIManager : MonoBehaviour
     void Update()
     {
         //게임 진행중
-        if(GameManager.instance.gState == GAMESTATE.BATTLE && !Input.GetMouseButton(0))
+        if(GameManager.instance.gState == GAMESTATE.BATTLE)
         {
             //UI Info Text 업데이트
-            if(!GameManager.instance.isPause)
+            if(!GameManager.instance.isPause && !Input.GetMouseButton(0))
             {
                 GameObject clickObject = mouseGetObject();
                 if(clickObject != null)
@@ -126,6 +126,20 @@ public class UIManager : MonoBehaviour
                 GameManager.instance.isPause = true;
                 gamePause();
                 return;
+            }
+            if(Input.GetMouseButtonDown(0))
+            {
+                GameObject clickObject = mouseGetObject();
+                if(clickObject != null)
+                {
+                    if(clickObject.name == "Pause Button")
+                    {
+                        GameManager.instance.gState = GAMESTATE.PAUSE;
+                        GameManager.instance.isPause = true;
+                        gamePause();
+                        return;
+                    }
+                }
             }
 
         }

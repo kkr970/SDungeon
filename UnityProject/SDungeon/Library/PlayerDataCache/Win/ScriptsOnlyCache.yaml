@@ -95,23 +95,23 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 12346}
     - Class: 114
-      Script: {instanceID: 12636}
+      Script: {instanceID: 12638}
     - Class: 114
-      Script: {instanceID: 12660}
+      Script: {instanceID: 12662}
     - Class: 114
-      Script: {instanceID: 13244}
+      Script: {instanceID: 13246}
     - Class: 114
-      Script: {instanceID: 13754}
+      Script: {instanceID: 13760}
     - Class: 114
-      Script: {instanceID: 13920}
+      Script: {instanceID: 13926}
     - Class: 114
-      Script: {instanceID: 13996}
+      Script: {instanceID: 14002}
     - Class: 114
-      Script: {instanceID: 14196}
+      Script: {instanceID: 14202}
     - Class: 114
-      Script: {instanceID: 14374}
+      Script: {instanceID: 14380}
     - Class: 114
-      Script: {instanceID: 14416}
+      Script: {instanceID: 14422}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -164,17 +164,17 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 12284}
     - Class: 114
-      Script: {instanceID: 13754}
+      Script: {instanceID: 12396}
     - Class: 114
-      Script: {instanceID: 14374}
+      Script: {instanceID: 13272}
     - Class: 114
-      Script: {instanceID: 14416}
+      Script: {instanceID: 13588}
     - Class: 114
-      Script: {instanceID: 15642}
+      Script: {instanceID: 13760}
     - Class: 114
-      Script: {instanceID: 16814}
+      Script: {instanceID: 14380}
     - Class: 114
-      Script: {instanceID: 24100}
+      Script: {instanceID: 14422}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -460,6 +460,12 @@ ScriptsOnlyBuild:
     className: Selectable
   - hash:
       serializedVersion: 2
+      Hash: 3459eccc2592039b44cda9c728c1a291
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: StartManager
+  - hash:
+      serializedVersion: 2
       Hash: d4020bafcd3ccbb5601a6e6c8ac78be0
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -532,6 +538,12 @@ ScriptsOnlyBuild:
     className: SpriteSkin
   - hash:
       serializedVersion: 2
+      Hash: cfef39fbe2ceb721b8cb12bd9e46be89
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: StartUIManager
+  - hash:
+      serializedVersion: 2
       Hash: 783f593b9380cf72d0f7ebfd4a0d4bcd
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -584,6 +596,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: TimelineAsset
+  - hash:
+      serializedVersion: 2
+      Hash: 5464e928f744ddbcabadcc8d5f262d95
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: StartSoundManager
   - hash:
       serializedVersion: 2
       Hash: 6939772cb3ce775a8e8d99f332534491
@@ -734,24 +752,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
-  - hash:
-      serializedVersion: 2
-      Hash: cfef39fbe2ceb721b8cb12bd9e46be89
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: StartUIManager
-  - hash:
-      serializedVersion: 2
-      Hash: 3459eccc2592039b44cda9c728c1a291
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: StartManager
-  - hash:
-      serializedVersion: 2
-      Hash: 5464e928f744ddbcabadcc8d5f262d95
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: StartSoundManager
   platform: 5
   scenePathNames:
   - Assets/Scenes/StartScene.unity
